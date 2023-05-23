@@ -2,9 +2,14 @@
 
 namespace preference\userprofile\controllers;
 
+use backend\modules\landings\models\PreferenceLanding;
+use backend\modules\landings\utility\PreferenceLandingUtility;
 use open20\amos\core\controllers\BackendController;
 use open20\amos\core\utilities\Email;
+use open2\amos\ticket\models\Ticket;
+use open2\amos\ticket\models\TicketCategorie;
 use preference\userprofile\models\FormContatti;
+use preference\userprofile\models\TicketFaqForm;
 use preference\userprofile\utility\EmailUtility;
 use Yii;
 use yii\filters\AccessControl;
@@ -12,6 +17,7 @@ use yii\filters\VerbFilter;
 use yii\helpers\HtmlPurifier;
 use yii\helpers\StringHelper;
 use yii\helpers\VarDumper;
+use yii\web\ForbiddenHttpException;
 
 /**
  * Aria S.p.A.
@@ -44,6 +50,7 @@ class ContactsController extends BackendController
                     [
                         'actions' => [
                             'contacts',
+                            'faq-ticket',
                             'quick-registration',
                         ],
                         'allow' => true,
@@ -74,7 +81,7 @@ class ContactsController extends BackendController
 
     /**
      *
-     * @return void
+     * @return string
      */
     public function actionContacts()
     {
@@ -122,6 +129,77 @@ class ContactsController extends BackendController
         return $this->render("contacts", [
             'model' => $model,
             'ok' => $ok
+        ]);
+    }
+
+    /**
+     *
+     * @return string
+     * @throws Yii\web\BadRequestHttpException
+     * @throws ForbiddenHttpException
+     */
+    public function actionFaqTicket($category_id, $landing_id)
+    {
+        $landing = PreferenceLanding::findOne(['id' => $landing_id]);
+        if (empty($landing)) {
+            throw new yii\web\BadRequestHttpException('Landing not exist');
+        }
+
+        $faqCategory = TicketCategorie::findOne(['id' => $category_id]);
+        if (empty($faqCategory)) {
+            throw new yii\web\BadRequestHttpException('Category not exist');
+        }
+
+        if (!$faqCategory->abilita_ticket) {
+            throw new ForbiddenHttpException('La categoria non è abilitata ai ticket');
+        }
+
+        PreferenceLandingUtility::getUrlLanding($landing);
+
+        $ok = null;
+        $model = new TicketFaqForm();
+        $errorMessage = '';
+
+        if (Yii::$app->request->post()) {
+            $model->load(Yii::$app->request->post());
+            if ($model->validate()) {
+
+                // creazione del ticket
+
+                $ticket = new Ticket();
+                $ticket->ticket_categoria_id = $faqCategory->id;
+                $ticket->titolo = $model->title;
+                $ticket->descrizione = $model->request;
+                $ticket->guest_name = $model->name;
+                $ticket->guest_surname = $model->surname;
+                $ticket->guest_email = $model->email;
+                $ticket->created_at = date('Y-m-d H:i:s');
+
+                if ($ticket->validate() && $ticket->save()) {
+                    $ok = true;
+                    $model = new TicketFaqForm();
+                } else {
+                    $ok = false;
+                    foreach ($ticket->errors as $error) {
+                        $errorMessage .= '<BR /> - ' . implode('<BR /> - ', $error);
+                    }
+                }
+
+            } else {
+                $ok = false;
+            }
+
+        }
+
+        $urlToReturn = PreferenceLandingUtility::getUrlLanding($landing) . '?#faq-section-id';
+        $categoryTitle = $faqCategory->titolo;
+
+        return $this->render("faq-ticket", [
+            'model' => $model,
+            'urlToReturn' => $urlToReturn,
+            'categoryTitle' => $categoryTitle,
+            'ok' => $ok,
+            'errorMessage' => $errorMessage,
         ]);
     }
 

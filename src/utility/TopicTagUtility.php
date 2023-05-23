@@ -57,6 +57,18 @@ class TopicTagUtility
         // VarDumper::dump( $query->createCommand()->rawSql,1,true);
         return $query->one();
     }
+    
+    /**
+     *
+     * @return Tag
+     */
+    public static function findTopicByTargetCode(string $code) 
+    { 
+        /** @var ActiveQuery $query */
+        $query = Tag::find()->where(['codice' => $code]);
+        // VarDumper::dump( $query->createCommand()->rawSql,1,true);
+        return $query->one();
+    }
 
     /**
      * Example of return:<br />
