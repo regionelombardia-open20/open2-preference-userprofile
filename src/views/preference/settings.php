@@ -208,7 +208,7 @@ switch ($currentTargetCode) {
                                         </button>
                                     </div>
                                 <?php }else{ //se contatto tel non valido ma email si 
-                                    if(($targetAttributes->validated_phone_flag===0) && (!empty($targetAttributes->phone))){ ?>
+                                    if(($targetAttributes->validated_phone_flag==0) && (!empty($targetAttributes->phone))){ ?>
                                         <div class="alert alert-danger alert-dismissible fade show mb-0 settings-alert" role="alert">
                                             <p>Attenzione la modalità di contatto "sms" non è stata validata.
                                                 Controlla il tuo cellulare e verifica il codice che ti abbiamo inviato. </p>

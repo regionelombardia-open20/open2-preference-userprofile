@@ -150,26 +150,31 @@ class PreferenceUserTargetAttribute extends Record
 
     public function phoneModified()
     {
-        $this->validated_phone_flag = 0;
-        $this->phone_validation_token = TargetAttributeUtility::generateNewPhoneToken();
-        
-        
-        $mailupSms = new MailupTransactionalSMS();
-        $mailupSms->setContent('Lombardia Informa: il codice di verifica per il numero di telefono [Telefono] attivato su [Target] è ' . $this->phone_validation_token );
-        $mailupSms->setRecipient($this->phone);
-        $mailupSms->setCampaignCode('phone-validation-token');
-        $mailupSms->setDynamicFields([
-            [
-                'N' => 'Telefono',
-                'V' => $this->phone,
-            ],
-            [
-                'N' => 'Target',
-                'V' => strtoupper(TargetTagUtility::getTargetByCode($this->target_code)->nome),
-            ],
-        ]);
-        // TODO Se vuoi si può memorizzare l'id di invio...
-        $ret = $mailupSms->sendSms();
+        if (!empty($this->phone)) {
+            $this->validated_phone_flag = 0;
+            $this->phone_validation_token = TargetAttributeUtility::generateNewPhoneToken();
 
+            $mailupSms = new MailupTransactionalSMS();
+            $mailupSms->setContent('Lombardia Informa: il codice di verifica per il numero di telefono [Telefono] attivato su [Target] è ' . $this->phone_validation_token);
+            $mailupSms->setRecipient($this->phone);
+            $mailupSms->setCampaignCode('phone-validation-token');
+            $mailupSms->setDynamicFields([
+                [
+                    'N' => 'Telefono',
+                    'V' => $this->phone,
+                ],
+                [
+                    'N' => 'Target',
+                    'V' => strtoupper(TargetTagUtility::getTargetByCode($this->target_code)->nome),
+                ],
+            ]);
+            // TODO Se vuoi si può memorizzare l'id di invio...
+            $ret = $mailupSms->sendSms();
+        } else {
+            // mi possono impostare un numero vuoto, svalido il flag e annullo il token
+            $this->validated_phone_flag = 0;
+            $this->phone_validation_token = null;
+        }
     }
+
 }

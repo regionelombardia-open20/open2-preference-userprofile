@@ -591,6 +591,7 @@ class PreferenceController extends BackendController
                     // modifico lo user con quello nuovo
                     $user = $loggedUserProfile->user;
                     $user->email = $model->email;
+                    $user->username = $model->email;
                     $user->save(false);
                     $transaction->commit();
 
