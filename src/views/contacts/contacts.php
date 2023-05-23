@@ -5,6 +5,7 @@ use open20\design\components\bootstrapitalia\ActiveForm;
 use open20\design\assets\BootstrapItaliaDesignAsset;
 
 $bootstrapItaliaAsset = BootstrapItaliaDesignAsset::register($this);
+$this->title = 'Assistenza tecnica';
 ?>
 <div class="uk-section- uk-visible@xl header-banner">
   <div style="background-image: url('/attachments/file/view?hash=a2b0b440e50048acf40f54006cb2d4f0&canCache=1');" class="uk-background-norepeat uk-background-cover uk-background-center-center uk-section">
@@ -111,7 +112,9 @@ Carta Nazionale dei Servizi (CNS), Carta di Identità Elettronica (CIE) ed eIDAS
             ) ?>
           </div>
           <div class="col-12">
-            <?= $form->field($model, 'reCaptcha')->widget(\himiklab\yii2\recaptcha\ReCaptcha::className())->label('') ?>
+            <?= $form->field($model, 'reCaptcha')->widget(\himiklab\yii2\recaptcha\ReCaptcha2::className(), [
+                'configComponentName' => 'myReCaptcha'
+            ])->label('') ?>
           </div>
           <div class="col-12">
             <?= $form->field($model, 'privacy')->checkBox(

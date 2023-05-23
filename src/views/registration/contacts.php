@@ -15,7 +15,7 @@ use yii\helpers\VarDumper;
 use yii\web\View;
 
 $idCittadini = 'target_cittadini-id';
-
+$this->title = 'Scelta contatti';
 
 $this->registerJs(
     <<<JS
@@ -76,6 +76,7 @@ $form = ActiveForm::begin([
                         <div>2</div>
                     </li>
                     <li class="active-step current-step">
+                        <span class="sr-only">Sei allo step 3 di 4</span>
                         <div>3</div>
                     </li>
                     <li class="">

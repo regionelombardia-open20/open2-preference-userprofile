@@ -60,21 +60,21 @@ $bootstrapItaliaAsset = BootstrapItaliaDesignAsset::register($this);
                         <?php
                           if ($key == PreferenceChannel::SMS_ID): 
                         ?> 
-                          <svg class="icon icon-secondary" role="img" aria-label="Icona per gestire la preferenza">
+                          <svg class="icon icon-secondary" role="img" alt="Icona per gestire la preferenza">
                             <use xlink:href="<?= $bootstrapItaliaAsset->baseUrl ?>/sprite/material-sprite.svg#message-text"></use>
                           </svg>
                         <?php
                           endif;
                           if ($key == PreferenceChannel::NEWSLETTER_ID):
                         ?> 
-                          <svg class="icon icon-secondary" role="img" aria-label="Icona per gestire la preferenza">
+                          <svg class="icon icon-secondary" role="img" alt="Icona per gestire la preferenza">
                             <use xlink:href="<?= $bootstrapItaliaAsset->baseUrl ?>/sprite/material-sprite.svg#email"></use>
                           </svg>
                         <?php
                           endif;
                           if ($key == PreferenceChannel::APP_ID):
                           ?> 
-                            <svg class="icon icon-secondary" role="img" aria-label="Icona per gestire la preferenza">
+                            <svg class="icon icon-secondary" role="img" alt="Icona per gestire la preferenza">
                               <use xlink:href="<?= $bootstrapItaliaAsset->baseUrl ?>/sprite/material-sprite.svg#cellphone"></use>
                             </svg>
                           <?php

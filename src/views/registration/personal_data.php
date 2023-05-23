@@ -16,6 +16,8 @@ use open20\design\components\bootstrapitalia\ActiveForm;
 use open20\amos\core\helpers\Html;
 use yii\helpers\Url;
 use preference\userprofile\utility\UserProfileUtility;
+
+$this->title = 'Dati personali';
 ?>
 
 <?php
@@ -42,6 +44,7 @@ $form = ActiveForm::begin([
             <div class="col-md-3">
                 <ul class="wizard-steps text-center">
                     <li class="active-step  current-step">
+                        <span class="sr-only">Sei allo step 1 di 4</span>
                         <div>1</div>
                     </li>
                     <li class="  ">

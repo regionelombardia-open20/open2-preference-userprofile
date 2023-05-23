@@ -23,21 +23,21 @@ if ($channelEmail || $channelSms || $channelApp) {
     <div class="d-flex">
         <?php
         if ($channelEmail) {
-            echo '<div class="btn-icon d-block mr-3"><span class="rounded-icon border border-secondary rounded-circle mx-auto p-1"><svg class="icon icon-secondary" role="img" aria-label="Icona per gestire la preferenza">
+            echo '<div class="btn-icon d-block mr-3"><span class="rounded-icon border border-secondary rounded-circle mx-auto p-1"><svg class="icon icon-secondary" role="img" alt="Icona per gestire la preferenza">
                 <use xlink:href="' . $bootstrapItaliaAsset->baseUrl . '/sprite/material-sprite.svg#email"></use>
             </svg></span><small class="text-secondary mx-auto">Email</small></div>';
             $noChannelActivate = false;
         }
 
         if ($channelSms) {
-            echo '<div class="btn-icon d-block mr-3"><span class="rounded-icon border border-secondary rounded-circle mx-auto p-1"><svg class="icon icon-secondary" role="img" aria-label="Icona per gestire la preferenza">
+            echo '<div class="btn-icon d-block mr-3"><span class="rounded-icon border border-secondary rounded-circle mx-auto p-1"><svg class="icon icon-secondary" role="img" alt="Icona per gestire la preferenza">
                 <use xlink:href="' . $bootstrapItaliaAsset->baseUrl . '/sprite/material-sprite.svg#message-text"></use>
             </svg></span><small class="text-secondary mx-auto">Sms</small></div>';
             $noChannelActivate = false;
         }
 
         if ($channelApp) {
-            echo '<div class="btn-icon d-block mr-3"><span class="rounded-icon border border-secondary rounded-circle mx-auto p-1"><svg class="icon icon-secondary" role="img" aria-label="Icona per gestire la preferenza">
+            echo '<div class="btn-icon d-block mr-3"><span class="rounded-icon border border-secondary rounded-circle mx-auto p-1"><svg class="icon icon-secondary" role="img" alt="Icona per gestire la preferenza">
                 <use xlink:href="' . $bootstrapItaliaAsset->baseUrl . '/sprite/material-sprite.svg#cellphone"></use>
             </svg></span><small class="text-secondary mx-auto">App</small></div>';
             $noChannelActivate = false;

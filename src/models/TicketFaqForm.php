@@ -4,6 +4,7 @@ namespace preference\userprofile\models;
 use open20\amos\admin\AmosAdmin;
 use Yii;
 use yii\base\Model;
+use yii\helpers\VarDumper;
 
 /**
  * Model without table
@@ -30,8 +31,11 @@ class TicketFaqForm extends Model
             [['title', 'name', 'surname', 'email'], 'string', 'max' => 255],
             [['request'], 'string', 'max' => 1000],
 //            ['confermaEmail', 'compare', 'compareAttribute' => 'email', 'message' => Yii::t('preferenceuser', 'Le email inserite non coincidono')],
-            [['reCaptcha'], \himiklab\yii2\recaptcha\ReCaptchaValidator::className(), 'message' => AmosAdmin::t('amosadmin', "#register_recaptcha_alert")]
+            [['reCaptcha'], \himiklab\yii2\recaptcha\ReCaptchaValidator2::className(),
+                'configComponentName' => 'myReCaptcha',
+                'message' => 'Clicca non sono un Robot',]
         ];
+
     }
 
     public function attributeLabels()

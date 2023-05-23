@@ -139,7 +139,7 @@ $("#send-email-validation-token-id{$idTagHtml}").click(function(event) {
             if(data == 'true'){                           
                 $('#modal-target-mail-id{$idTagHtml}').modal('hide');
                 $('#messages-attributes-id').html(' \
-                  <div class="alert alert-success alert-dismissible fade show" role="alert"> \
+                  <div class="alert alert-success alert-dismissible fade show" role="alert" aria-live="polite"> \
                   Email inviata a {$email} correttamente \
                   <button type="button" class="close" data-dismiss="alert" aria-label="Close"> \
                       <span aria-hidden="true">&times;</span> \

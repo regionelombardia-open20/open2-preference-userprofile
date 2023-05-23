@@ -14,8 +14,7 @@ use open20\design\assets\BootstrapItaliaDesignAsset;
 $bootstrapItaliaAsset = BootstrapItaliaDesignAsset::register($this);
 ?>
 <div class="uk-section- uk-visible@xl header-banner">
-    <div style="background-image: url('/attachments/file/view?hash=a2b0b440e50048acf40f54006cb2d4f0&canCache=1');"
-         class="uk-background-norepeat uk-background-cover uk-background-center-center uk-section">
+    <div style="background-image: url('/attachments/file/view?hash=a2b0b440e50048acf40f54006cb2d4f0&canCache=1');" class="uk-background-norepeat uk-background-cover uk-background-center-center uk-section">
 
         <div class="uk-container">
             <div class="uk-container">
@@ -35,16 +34,10 @@ $bootstrapItaliaAsset = BootstrapItaliaDesignAsset::register($this);
         <div class="col-12">
             <div>
 
-                <!--
-                        <div class="h5">FAQ Ticket</div>
-                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-                            Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
-                -->
-
                 <?php
                 if (!is_null($ok)) :
                     if ($ok) :
-                        ?>
+                ?>
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             Gentile utente, la tua domanda è stata inviata. Ti risponderemo quanto prima
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -53,7 +46,7 @@ $bootstrapItaliaAsset = BootstrapItaliaDesignAsset::register($this);
                         </div>
                     <?php
                     else :
-                        ?>
+                    ?>
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             Errore nell'invio della comunicazione...
                             <div>
@@ -63,7 +56,7 @@ $bootstrapItaliaAsset = BootstrapItaliaDesignAsset::register($this);
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                    <?php
+                <?php
                     endif;
                 endif;
                 ?>
@@ -125,7 +118,9 @@ $bootstrapItaliaAsset = BootstrapItaliaDesignAsset::register($this);
                         ) ?>
                     </div>
                     <div class="col-12">
-                        <?= $form->field($model, 'reCaptcha')->widget(\himiklab\yii2\recaptcha\ReCaptcha::className())->label('') ?>
+                        <?= $form->field($model, 'reCaptcha')->widget(\himiklab\yii2\recaptcha\ReCaptcha2::className(), [
+                            'configComponentName' => 'myReCaptcha'
+                        ])->label('') ?>
                     </div>
                     <div class="col-12">
                         <?php
@@ -142,11 +137,12 @@ $bootstrapItaliaAsset = BootstrapItaliaDesignAsset::register($this);
                 <div>
                     <?php
                     echo Html::a(
-                        'Torna alla Landing Page', $urlToReturn,
+                        'Torna alla Landing Page',
+                        $urlToReturn,
                         ['class' => 'btn btn-secondary px-5']
                     );
                     ?>
-              
+
                     <?php
                     echo Html::submitButton(
                         'Invia',

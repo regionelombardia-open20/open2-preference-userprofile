@@ -52,6 +52,7 @@ $form = ActiveForm::begin([
                     <div>3</div>
                 </li>
                 <li class="active-step current-step">
+                <span class="sr-only">Sei allo step 4 di 4</span>
                     <div>4</div>
                 </li>
             </ul>
@@ -65,7 +66,7 @@ $form = ActiveForm::begin([
 <div class="container py-5 mb-5 border-bottom border-light">
     <div class="uk-container">
 
-        <div class="uk-grid-margin" uk-grid="">
+        <div class="uk-grid-margin">
             <div id="9ec" class="uk-width-1-1">
                 <div id="text-13b">
 

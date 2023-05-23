@@ -42,6 +42,7 @@ $form = ActiveForm::begin([
                 <div class="col-md-3">
                     <ul class="wizard-steps text-center">
                         <li class="active-step  current-step">
+                        <span class="sr-only">Sei allo step 1 di 4</span>
                             <div>1</div>
                         </li>
                         <li class="  ">

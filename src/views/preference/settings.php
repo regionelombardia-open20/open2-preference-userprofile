@@ -26,6 +26,8 @@ use preference\userprofile\models\PreferenceLanguage;
  * @var array $selectedLanguages
  */
 
+$this->title = 'Impostazioni';
+
 $bootstrapItaliaAsset = BootstrapItaliaDesignAsset::register($this);
 $labelTitle1 = '';
 $labelTitle2 = '';
@@ -56,9 +58,9 @@ switch ($currentTargetCode) {
     <div class="row variable-gutters">
 
         <!-- START SIDEBAR -->
-        <div class="col-lg-3 col-md-4 d-none d-md-block">
+        <div class="col-lg-3 col-md-4 affix-parent">
             <!-- MENU SCELTA TARGET -->
-            <div class="sidebar-wrapper sidebar-preference it-line-right-side h-100 affix-parent">
+            <div class="sidebar-wrapper pt-4 sidebar-preference it-line-right-side h-100 affix-parent">
                 <div class="sidebar-linklist-wrapper affix-top">
                     <div class="link-list-wrapper">
                         <ul class="link-list">
@@ -261,6 +263,50 @@ JS
                                     <div class="alert alert-danger alert-dismissible fade show mb-0 settings-alert" role="alert">
                                         <p>Attenzione la modalità di contatto "email" non è stata validata.
                                             Accedi alla tua casella di posta e completa la validazione cliccando sul link. </p>
+
+                                        <?php
+                                        $this->registerJs(
+                                            <<<JS
+$("#send-email-validation-token-id-on-error").click(function(event) {
+      event.preventDefault();
+      $.post({
+        url: '/preferenceuser/preference/send-validation-token-email-ajax',
+        type: 'post',
+        data: {
+                target_code: '{$currentTargetCode}',
+              },
+        success: function (data) {
+            if(data == 'true'){                           
+               
+                $('#messages-attributes-id').html(' \
+                  <div class="alert alert-success alert-dismissible fade show" role="alert" aria-live="polite"> \
+                  Email inviata a {$email} correttamente \
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"> \
+                      <span aria-hidden="true">&times;</span> \
+                  </button> \
+                  </div> \
+                ');
+            }
+            if(data == 'false'){                          
+                
+                $('#messages-attributes-id').html(' \
+                  <div class="alert alert-danger alert-dismissible fade show" role="alert"> \
+                  Errore nell\'invio del messagio email \
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"> \
+                      <span aria-hidden="true">&times;</span> \
+                  </button> \
+                  </div> \
+                ');
+            }
+        }
+
+    });
+});
+JS
+                                        );
+                                        echo \open20\amos\core\helpers\Html::a('<strong>Invia di nuovo email di verifica</strong>', '#', ['id' => 'send-email-validation-token-id-on-error' . $idTagHtml])
+                                        ?>
+
                                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>

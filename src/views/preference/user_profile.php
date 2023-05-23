@@ -15,17 +15,28 @@ use open20\amos\socialauth\models\SocialAuthUsers;
 
 $customAsset = BootstrapItaliaDesignAsset::register($this);
 
- 
+$this->title = 'Il mio profilo';
 /**
  * @var UserProfile $userProfile
  * 
  */
+$js = <<<JS
+$(document).ready(function(){
+    var buttonId = sessionStorage["buttonId"];
+    if (buttonId) {
+        $("#toggle-stato-id-"+buttonId).focus();
+        sessionStorage["buttonId"] = null;
+    }
+});
+JS;
+$this->registerJs($js);
 ?>
+
 
 <div class="row variable-gutters">
     <!-- START SIDEBAR -->
-    <div class="col-lg-3 affix-parent d-none d-lg-block">
-        <div class="sidebar-wrapper it-line-right-side sidebar-preference h-100 pt-5">
+    <div class="col-lg-3 col-md-4 affix-parent">
+        <div class="sidebar-wrapper pt-4 sidebar-preference it-line-right-side h-100 affix-parent">
         </div>
     </div>
     <!-- START MAIN -->
@@ -49,7 +60,7 @@ $customAsset = BootstrapItaliaDesignAsset::register($this);
                 <div class="informazioni-personali-container  mt-3 mb-5  d-flex flex-column">
                     <h2 class="mb-4 text-uppercase h5"> Informazioni personali </h2>
 
-                    <div class="row variable-gutters mb-5">
+                    <div class="row variable-gutters d-flex align-items-end mb-5">
                         <?php
                         foreach (\preference\userprofile\utility\UserProfileUtility::getIDMFields(Yii::$app->user->id) as $key => $value):
                             ?>
@@ -62,7 +73,7 @@ $customAsset = BootstrapItaliaDesignAsset::register($this);
                         ?>
                     </div>
 
-                    <div class="row variable-gutters">
+                    <div class="row variable-gutters d-flex align-items-end mb-5">
 
                         <div class="col-md-4">
                             <?= $form->field($model, 'name')->textInput() ?>
@@ -71,11 +82,10 @@ $customAsset = BootstrapItaliaDesignAsset::register($this);
                             <?= $form->field($model, 'surname')->textInput() ?>
                         </div>
                         <div class="col-md-4">
-                            <div class="label-style tertiary-color">Sesso</div>
-                            <?= $form->field($model, 'gender')->radioList($model->getGenderChoices())->label(false) ?>
+                                <?= $form->field($model, 'gender')->radioList($model->getGenderChoices(),['general-list-label'=>'Sesso']) ?>
                         </div>
                     </div>
-                    <div class="row variable-gutters">
+                    <div class="row variable-gutters d-flex align-items-end mb-5">
                         <div class="col-md-4">
                             <?=
                                 $form->field($model, 'birth_date')->inputCalendar(['placeholder' => 'dd/mm/YYYY'], 'd/m/Y')
@@ -422,7 +432,8 @@ JS
                     },
                 success: function (data) {
                     if(data == 'true'){                     
-                        location.reload();
+                        sessionStorage["buttonId"] =  $jsId;
+                        document.location.reload(true);
                     } else {                                                
                         
                         //$(this).prop('checked', false);
@@ -451,7 +462,8 @@ JS
                     },
                 success: function (data) {
                     if(data == 'true'){                     
-                        location.reload();
+                        sessionStorage["buttonId"] =  $jsId;
+                        document.location.reload(true);
                     } else {                         
 
                         //$(this).prop('checked', true);
@@ -550,8 +562,6 @@ JS
         <?php
         endforeach;
         ?>
-
-
         <div id="messages-attributes-id"></div>
     </div>
 </div>

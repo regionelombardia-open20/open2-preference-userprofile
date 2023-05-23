@@ -244,8 +244,13 @@ class PreferenceController extends BackendController
                 $this->removePreference($loggedUserProfile, Tag::findOne(Yii::$app->request->post($nameTopicDeselected)));                
             }
 
-            if ($targetAttributes->load(Yii::$app->request->post()) && $targetAttributes->validate()) {
-                $targetAttributes->save();
+            if (Yii::$app->request->post('target_code_to_modify')) {
+                if ($targetAttributes->load(Yii::$app->request->post()) && $targetAttributes->validate() && $targetAttributes->save()) {
+                        Yii::$app->session->addFlash('success', 'Dati profilo salvati correttamente');
+                }else{
+                        Yii::$app->session->addFlash('danger', 'Errore: dati non salvati');
+                        $targetAttributes = TargetAttributeUtility::getAttributesByUserCode(Yii::$app->user->id, $target);
+                }
             }
 
             if (!empty(Yii::$app->request->post($nameLanguage))) {
@@ -571,8 +576,10 @@ class PreferenceController extends BackendController
 
             if (Yii::$app->request->post('target_code_to_modify')) {
                 $targetAttributes = TargetAttributeUtility::getAttributesByUserCode(Yii::$app->user->id, Yii::$app->request->post('target_code_to_modify'));
-                if ($targetAttributes->load(Yii::$app->request->post()) && $targetAttributes->validate()) {
-                    $targetAttributes->save();
+                if ($targetAttributes->load(Yii::$app->request->post()) && $targetAttributes->validate() && $targetAttributes->save()) {
+                    Yii::$app->session->addFlash('success', 'Dati profilo salvati correttamente');
+                }else{
+                    Yii::$app->session->addFlash('danger', 'Errore: dati non salvati');
                 }
             }
         }

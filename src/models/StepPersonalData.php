@@ -46,7 +46,13 @@ class StepPersonalData extends Model
             [['email'], 'required'],
             [['gender', 'fiscal_code'], 'safe'],
             [['name', 'surname'], 'string', 'max' => 255],
-            [['birth_date'], 'date', 'format' => 'd/m/Y'],
+            ['name', 'filter', 'filter' => function ($value) {
+                return strip_tags(\yii\helpers\HtmlPurifier::process($value));
+            }],
+            ['surname', 'filter', 'filter' => function ($value) {
+                return strip_tags(\yii\helpers\HtmlPurifier::process($value));
+            }],
+            [['birth_date'], 'date', 'format' => 'dd/MM/yyyy'],
             [['birth_date'], 'match', 'pattern'=>'#\d{2}/\d{2}/\d{4}#'],
             [['email'], 'email'],
             [['email'], function ($attribute, $params, $validator) {

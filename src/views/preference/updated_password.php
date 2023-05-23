@@ -16,8 +16,8 @@ use yii\helpers\Url;
 
 <div class="row variable-gutters my-5">
   <!-- START SIDEBAR -->
-  <div class="col-lg-3 affix-parent d-none d-lg-block">
-    <div class="sidebar-wrapper it-line-right-side sidebar-preference h-100 pt-5">
+  <div class="col-lg-3 col-md-4 affix-parent">
+    <div class="sidebar-wrapper pt-4 sidebar-preference it-line-right-side h-100 affix-parent">
     </div>
   </div>
   <!-- START MAIN -->

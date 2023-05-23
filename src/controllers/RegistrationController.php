@@ -7,22 +7,23 @@ use DateTime;
 use open20\amos\admin\models\UserOtpCode;
 use open20\amos\admin\models\UserProfile;
 use open20\amos\comuni\models\IstatProvince;
+use open20\amos\core\controllers\BackendController;
 use open20\amos\core\utilities\CurrentUser;
 use open20\amos\socialauth\utility\SocialAuthUtility;
-use preference\userprofile\exceptions\NotificationEmailException;
-use preference\userprofile\models\base\PreferenceChannel;
-use preference\userprofile\models\PreferenceLanguageUserMm;
-use preference\userprofile\models\IstatComuni;
-use open20\amos\core\controllers\BackendController;
 use preference\userprofile\exceptions\CreationRegisterdUserException;
 use preference\userprofile\exceptions\LoadWizardDataException;
+use preference\userprofile\exceptions\NotificationEmailException;
+use preference\userprofile\models\base\PreferenceChannel;
 use preference\userprofile\models\PreferenceLanguage;
+use preference\userprofile\models\PreferenceLanguageUserMm;
+use preference\userprofile\models\IstatComuni;
 use preference\userprofile\models\PreferenceTopicPrlToPc;
 use preference\userprofile\models\PreferenceUserTargetAttribute;
 use preference\userprofile\models\StepContacts;
 use preference\userprofile\models\StepPersonalData;
 use preference\userprofile\models\StepPreferences;
 use preference\userprofile\models\StepPrivacy;
+use preference\userprofile\models\UserProfile as UserProfile2;
 use preference\userprofile\utility\EmailUtility;
 use preference\userprofile\utility\TargetAttributeUtility;
 use preference\userprofile\utility\TargetTagUtility;
@@ -33,7 +34,9 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\helpers\HtmlPurifier;
 use yii\helpers\VarDumper;
+use yii\web\Response;
 
 /**
  * Aria S.p.A.
@@ -193,7 +196,7 @@ class RegistrationController extends BackendController
 
                 if ($model->validate()) {
                     $this->session->remove($this->stepPersonalDataSessionId);
-                    $this->session[$this->stepPersonalDataSessionId] = Yii::$app->request->post();
+                    $this->session[$this->stepPersonalDataSessionId] = $this->postArrayValidate();
                     $this->redirect('preferences');
                 }
             }
@@ -206,6 +209,17 @@ class RegistrationController extends BackendController
             'items' => $items,
             'idmData' => $this->idmData,
         ]);
+    }
+
+    private function postArrayValidate(){
+       $post =  Yii::$app->request->post();
+       if(isset($post["StepPersonalData"]["name"])){
+        $post["StepPersonalData"]["name"] = strip_tags(HtmlPurifier::process($post["StepPersonalData"]["name"]));
+       }
+       if(isset($post["StepPersonalData"]["surname"])){
+        $post["StepPersonalData"]["surname"] = strip_tags(HtmlPurifier::process($post["StepPersonalData"]["surname"]));
+       }
+       return $post;
     }
 
     private function validOtpExist()
@@ -553,8 +567,8 @@ class RegistrationController extends BackendController
             }
 
             // aggiornamento sistema di provenienza
-            /** @var \preference\userprofile\models\UserProfile $upForOriginSystem */
-            $upForOriginSystem = \preference\userprofile\models\UserProfile::find()->andWhere(['id' => $userProfile->id])->one();
+            /** @var UserProfile2 $upForOriginSystem */
+            $upForOriginSystem = UserProfile2::find()->andWhere(['id' => $userProfile->id])->one();
             if(!empty($upForOriginSystem)) {
                 $userProfile->preference_origin_system_id = 1;
                 $userProfile->save(false);
@@ -726,7 +740,7 @@ class RegistrationController extends BackendController
 
     public function actionTestDataAjax()
     {  
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        \Yii::$app->response->format = Response::FORMAT_JSON;
         $relatedValue = \Yii::$app->request->post('related_value');
         $toret = [];
 
@@ -742,7 +756,7 @@ class RegistrationController extends BackendController
 
     public function actionSendOtp()
     {
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        \Yii::$app->response->format = Response::FORMAT_JSON;
         $request = \Yii::$app->request->post();
         $toret['status'] = 'ko';
         if (!empty($request)) {

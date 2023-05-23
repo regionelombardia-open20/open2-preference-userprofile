@@ -7,17 +7,16 @@ use open20\amos\admin\models\UserOtpCode;
 use open20\amos\admin\models\UserProfile;
 use open20\amos\socialauth\utility\SocialAuthUtility;
 use preference\userprofile\exceptions\NotificationEmailException;
-use preference\userprofile\models\PreferenceLanguageUserMm;
 use preference\userprofile\models\PreferenceLanguage;
+use preference\userprofile\models\PreferenceLanguageUserMm;
 use preference\userprofile\utility\UserProfileUtility;
 use open20\amos\comuni\models\IstatProvince;
-use preference\userprofile\models\IstatComuni;
 use open20\amos\core\controllers\BackendController;
 use open20\amos\core\utilities\CurrentUser;
-use open20\amos\core\models\AccessTokens;
+use open20\amos\mobile\bridge\modules\v1\models\User;
 use preference\userprofile\exceptions\CreationRegisterdUserException;
 use preference\userprofile\exceptions\LoadWizardDataException;
-use preference\userprofile\models\base\PreferenceUsernameValidationToken;
+use preference\userprofile\models\IstatComuni;
 use preference\userprofile\models\PreferenceChannel;
 use preference\userprofile\models\PreferenceTopicPrlToPc;
 use preference\userprofile\models\PreferenceUserTargetAttribute;
@@ -25,6 +24,7 @@ use preference\userprofile\models\StepAppContacts;
 use preference\userprofile\models\StepPersonalData;
 use preference\userprofile\models\StepPreferences;
 use preference\userprofile\models\StepPrivacy;
+use preference\userprofile\models\UserProfile as UserProfile2;
 use preference\userprofile\utility\EmailUtility;
 use preference\userprofile\utility\TargetAttributeUtility;
 use preference\userprofile\utility\TargetTagUtility;
@@ -32,14 +32,12 @@ use preference\userprofile\utility\TopicTagUtility;
 use preference\userprofile\utility\UserInterestTagUtility;
 use Yii;
 use yii\filters\AccessControl;
-use yii\filters\auth\CompositeAuth;
-use yii\filters\auth\HttpBasicAuth;
-use yii\filters\auth\HttpBearerAuth;
-use yii\filters\auth\QueryParamAuth;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\helpers\HtmlPurifier;
 use yii\helpers\VarDumper;
 use yii\web\ForbiddenHttpException;
+use yii\web\Response;
 
 /**
  * Aria S.p.A.
@@ -238,7 +236,7 @@ class RegistrationAppController extends BackendController
 
                 if ($model->validate()) {
                     $this->session->remove($this->stepPersonalDataSessionId);
-                    $this->session[$this->stepPersonalDataSessionId] = Yii::$app->request->post();
+                    $this->session[$this->stepPersonalDataSessionId] = $this->postArrayValidate();
                     $this->redirect('preferences');
                 }
             }
@@ -251,6 +249,17 @@ class RegistrationAppController extends BackendController
             'items' => $items,
             'idmData' => $this->idmData,
         ]);
+    }
+
+    private function postArrayValidate(){
+       $post =  Yii::$app->request->post();
+       if(isset($post["StepPersonalData"]["name"])){
+        $post["StepPersonalData"]["name"] = strip_tags(HtmlPurifier::process($post["StepPersonalData"]["name"]));
+       }
+       if(isset($post["StepPersonalData"]["surname"])){
+        $post["StepPersonalData"]["surname"] = strip_tags(HtmlPurifier::process($post["StepPersonalData"]["surname"]));
+       }
+       return $post;
     }
 
     private function validOtpExist()
@@ -509,8 +518,8 @@ class RegistrationAppController extends BackendController
             //Nessuna mail di validazione va mandata... DL Semplificazioni
 
             // aggiornamento sistema di provenienza
-            /** @var \preference\userprofile\models\UserProfile $upForOriginSystem */
-            $upForOriginSystem = \preference\userprofile\models\UserProfile::find()->andWhere(['id' => $userProfile->id])->one();
+            /** @var UserProfile2 $upForOriginSystem */
+            $upForOriginSystem = UserProfile2::find()->andWhere(['id' => $userProfile->id])->one();
             if(!empty($upForOriginSystem)) {
                 $userProfile->preference_origin_system_id = 2;
                 $userProfile->save(false);
@@ -550,7 +559,7 @@ class RegistrationAppController extends BackendController
         $this->view->params['customClassMainContent'] = 'container';
 
         if (Yii::$app->user->id == 2) {
-            $userMobile = \open20\amos\mobile\bridge\modules\v1\models\User::findOne(['id' => $user->id]);
+            $userMobile = User::findOne(['id' => $user->id]);
             $token = $userMobile->refreshAccessToken('webcms', 'cms');
 
             return $this->redirect(['/preference-userprofile/preference/app-end-point', 'token' => $token->access_token]);
@@ -645,7 +654,7 @@ class RegistrationAppController extends BackendController
 
     public function actionTestDataAjax()
     {
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        \Yii::$app->response->format = Response::FORMAT_JSON;
         $relatedValue = \Yii::$app->request->post('related_value');
         $toret = [];
 
@@ -661,7 +670,7 @@ class RegistrationAppController extends BackendController
 
     public function actionSendOtp()
     {
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        \Yii::$app->response->format = Response::FORMAT_JSON;
         $request = \Yii::$app->request->post();
         $toret['status'] = 'ko';
         if (!empty($request)) {

@@ -14,6 +14,8 @@ use open20\design\assets\BootstrapItaliaDesignAsset;
 use open20\design\components\bootstrapitalia\CheckBoxListTopicsIcon;
 
 $bootstrapItaliaAsset = BootstrapItaliaDesignAsset::register($this);
+
+$this->title = 'Scelta preferenze';
 ?>
 
 <?php
@@ -44,6 +46,7 @@ $form = ActiveForm::begin([
                 <div>1</div>
             </li>
             <li class="active-step current-step">
+            <span class="sr-only">Sei allo step 2 di 4</span>
                 <div>2</div>
             </li>
             <li class=" ">
