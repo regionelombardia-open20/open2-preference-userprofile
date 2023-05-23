@@ -199,7 +199,9 @@ class UserProfileUtility
             SocialAuthUtility::disconnectIdm($user->id);
 
             $token = AccessTokens::findOne(['user_id' => $userProfile->user->id]);
-            $token->delete();
+            if (!empty($token)){
+                $token->delete();
+            }
 
             $user->save(false);
             $userProfile->save(false);

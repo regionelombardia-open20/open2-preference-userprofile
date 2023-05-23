@@ -94,7 +94,12 @@ $this->registerJs($js);
                         <div class="col-md-4">
 
                             <?=
-                                $form->field($model, 'residence_province')->select($items, ['placeholder' => 'Scegli una provincia', 'id' => 'residence_province-id'])
+                                $form->field($model, 'residence_province')->select($items, [
+                                'placeholder' => 'Scegli una provincia',
+                                'id' => 'residence_province-id',
+                                'emptySelectionLabel' => 'Seleziona',
+                                'emptySelectionEnable' => true,
+                            ]);
                             ?>
 
                         </div>
@@ -107,6 +112,8 @@ $this->registerJs($js);
                                     'placeholder' => 'Scegli un comune',
                                     'data-action' => Url::to('/preferenceuser/registration/test-data-ajax'),
                                     'related-id' => 'residence_province-id',
+                                    'emptySelectionLabel' => 'Seleziona',
+                                    'emptySelectionEnable' => true,
                                 ])
                             ?>
 

@@ -128,21 +128,26 @@ $form = ActiveForm::begin([
                 ?>
 
             </div>
-            <div class="col-md-4">
-
+            <div class="col-md-4 select-provincia">
                 <?=
-                $form->field($model, 'residence_province')->select( $items,['placeholder' => 'Scegli una provincia', 'id' => 'residence_province-id'])
+                    $form->field($model, 'residence_province')->select($items, [
+                        'placeholder' => 'Scegli una provincia',
+                        'id' => 'residence_province-id',
+                        'emptySelectionLabel' => 'Seleziona',
+                        'emptySelectionEnable' => true,
+                    ]);
                 ?>
 
             </div>
-            <div class="col-md-4">
-
+            <div class="col-md-4 select-comune">
                 <?=
                 $form->field($model, 'residence_city')->select( null,[
                     'placeholder' => 'Scegli un comune',
                     'data-action' => Url::to('test-data-ajax'),
                     'related-id' => 'residence_province-id',
-                ])
+                       'emptySelectionLabel' => 'Seleziona',
+                       'emptySelectionEnable' => true,
+                   ]);
                 ?>
 
             </div>
