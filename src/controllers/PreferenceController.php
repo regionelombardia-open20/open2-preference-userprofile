@@ -12,6 +12,7 @@ use Exception;
 use preference\userprofile\exceptions\HandlePreferenceException;
 use preference\userprofile\models\IstatComuni;
 use preference\userprofile\models\PersonalData;
+use preference\userprofile\models\PreferenceChannel;
 use preference\userprofile\models\PreferenceTopicChannelMm;
 use preference\userprofile\models\PreferenceUsernameValidationToken;
 use preference\userprofile\models\PreferenceUserTargetAttribute;
@@ -76,6 +77,7 @@ class PreferenceController extends BackendController
                             'disable-target-ajax',
                             'validate-phone-ajax',
                             'send-validation-token-phone-ajax',
+                            'send-validation-token-email-ajax',
                             'user-profile-update-email',
                             'user-profile-email',
                             'user-profile-password',
@@ -157,6 +159,7 @@ class PreferenceController extends BackendController
             throw new BadRequestHttpException();
         }
 
+        /** @var PreferenceUserTargetAttribute $targetAttributes */
         $targetAttributes = TargetAttributeUtility::getAttributesByUserCode(Yii::$app->user->id, $target);
         //VarDumper::dump( $targetAttributes->toArray(), $depth = 3, $highlight = true);
 
@@ -166,22 +169,52 @@ class PreferenceController extends BackendController
             $userChannel = new UserChannel();
             if ($userChannel->load(Yii::$app->request->post())) {
 
-                // if (!empty($userChannel->channels)) {     //  TOLTO... 
-                $this->saveChannels($userChannel);
-
-                // Se l'utente non l'ha ancora scelto la tematica la salvo anche
-                // ADD PREFERENCE
+                // Salvo i canali poi la preferenza + controllo messaggio di errore
                 try {
-                    $ret = $this->savePreference($loggedUserProfile, Tag::findOne($userChannel->tag_id)); 
-                    if ($ret) {
+                    $this->saveChannels($userChannel);
+
+                    // MESSAGGI personalizzati in base alla situazione!
+                    // 1) se la tematica è stata salvata senza canali allora diamo un warning
+                    $warningMessageFlag = false;
+                    if (count($userChannel->channels) == 0) {
                         Yii::$app->session->addFlash('modal', [
-                            'title' => 'Preferenza attivata con successo',
-                            'description' => 'La tematica è stata aggiunta alle tue preferenze, riceverai comunicazioni sui canali da te indicati',
-                            'icon' => Url::to('/img/success.svg'),
-                            'icon-alt' => 'icona spunta vede di successo',
-                            'ok-button-label' => 'OK Grazie'
+                                'title' => 'Preferenza attivata con successo',
+                                'description' => 'Attenzione: seleziona almeno un canale di contatto per ricevere notizie relative alla tematica indicata',
+                                'icon' => Url::to('/img/warning.svg'),
+                                'icon-alt' => 'icona spunta vede di successo',
+                                'ok-button-label' => 'OK Grazie'
                             ]
                         );
+                        $warningMessageFlag = true;
+                    } elseif ($this->checkChannelsAndAttributesWarning($userChannel->channels, $targetAttributes)) {
+                        Yii::$app->session->addFlash('modal', [
+                                'title' => 'Preferenza attivata con successo',
+                                'description' => 'Attenzione: inserisci e valida i dati di contatto per ricevere le notizie di Lombardia Informa',
+                                'icon' => Url::to('/img/warning.svg'),
+                                'icon-alt' => 'icona spunta vede di successo',
+                                'ok-button-label' => 'OK Grazie'
+                            ]
+                        );
+                        $warningMessageFlag = true;
+                    }
+
+                    $ret = $this->savePreference($loggedUserProfile, Tag::findOne($userChannel->tag_id)); 
+                    if ($ret) {
+                        // se non ho già messaggi di warning... ed è stata attivata un'altra tematica...
+                         if (!$warningMessageFlag) {
+                            // tutto ok - situazione di messaggio OK!
+                            Yii::$app->session->addFlash('modal', [
+                                    'title' => 'Preferenza attivata con successo',
+                                    'description' => 'La tematica è stata aggiunta alle tue preferenze, riceverai comunicazioni sui canali da te indicati',
+                                    'icon' => Url::to('/img/success.svg'),
+                                    'icon-alt' => 'icona spunta vede di successo',
+                                    'ok-button-label' => 'OK Grazie'
+                                ]
+                            );
+                        }
+                    } else {
+                        // do nothing
+                        // andrebbe un messaggio per dire, ok modifica della tematica andata a buon fine... ma per ora non si vuole fare.
                     }
                 } catch (Exception $e) {
                     Yii::$app->session->addFlash('modal', [
@@ -224,6 +257,30 @@ class PreferenceController extends BackendController
             'isHBEmail' => (count($hbEmails) > 0),
             'hbEmail' => $hbEmails,
         ]);
+    }
+
+    /**
+     * @param $channels
+     * @param PreferenceUserTargetAttribute $targetAttributes
+     * @return bool
+     */
+    private function checkChannelsAndAttributesWarning($channels, $targetAttributes)
+    {
+        $toret = false;
+        foreach ($channels as $channelId) {
+            if (PreferenceChannel::NEWSLETTER_ID == $channelId){
+                if (empty($targetAttributes->email) || ($targetAttributes->validated_email_flag != 1)){
+                    $toret = true;
+                }
+            }
+
+            if (PreferenceChannel::SMS_ID == $channelId){
+                if (empty($targetAttributes->phone) || ($targetAttributes->validated_phone_flag != 1)){
+                    $toret = true;
+                }
+            }
+        }
+        return $toret;
     }
 
     private function savePreference($userProfile, $tag)
@@ -371,6 +428,33 @@ class PreferenceController extends BackendController
         if (!empty($uta)) {
             $uta->phoneModified();
             $uta->save(false);
+            return 'true';
+        } else {
+            return 'false';
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function actionSendValidationTokenEmailAjax(): string
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $request = \Yii::$app->request->post();
+        /** @var PreferenceUserTargetAttribute $uta */
+        $uta = TargetAttributeUtility::getAttributesByUserCode(Yii::$app->user->id, $request['target_code']);
+
+        if (!empty($uta) && !empty($uta->email_validation_token)) {
+            /** @var Tag $tag */
+            $tag = TargetTagUtility::getTargetByCode($uta->target_code);
+            try {
+                EmailUtility::sendTargetMailValidationToken($uta->email_validation_token
+                    , $uta->email
+                    , 'Lombardia Informa: validazione email di contatto'
+                    , $tag->nome);
+            } catch (Exception $e) {
+                return 'false';
+            }
             return 'true';
         } else {
             return 'false';

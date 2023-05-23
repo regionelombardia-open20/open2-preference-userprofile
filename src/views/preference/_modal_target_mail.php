@@ -4,9 +4,14 @@ use open20\design\components\bootstrapitalia\ActiveForm;
 use open20\design\assets\BootstrapItaliaDesignAsset;
 use yii\web\View;
 
+/**
+ * @var \preference\userprofile\models\PreferenceUserTargetAttribute $targetAttributes
+ * @var View $this
+ */
+
 $bootstrapItaliaAsset = BootstrapItaliaDesignAsset::register($this);
 $idTagHtml = isset($htmlId) ? $htmlId : '';
-
+$currentTargetCode = $currentTargetTag->codice;
 
 $this->registerJs(
   <<<JS
@@ -108,6 +113,59 @@ JS
       </div>
       <?php ActiveForm::end(); ?>
 
+        <?php
+        $email = $targetAttributes->getOldAttribute('email');
+        $validatedEmail = $targetAttributes->getOldAttribute('validated_email_flag');
+        if (!empty($email) && ($validatedEmail != 1)):
+            ?>
+            <div class="modal-footer justify-content-between lightgrey-bg-c1 border-top p-4">
+                <p class="text-muted mb-0"><?= $email ?></p>
+                <?php
+                echo \open20\amos\core\helpers\Html::a('<strong>Invia di nuovo email</strong>', '#', ['id' => 'send-email-validation-token-id' . $idTagHtml])
+                ?>
+            </div>
+            <?php
+            $this->registerJs(
+                    <<<JS
+$("#send-email-validation-token-id{$idTagHtml}").click(function(event) {
+      event.preventDefault();
+      $.post({
+        url: '/preferenceuser/preference/send-validation-token-email-ajax',
+        type: 'post',
+        data: {
+                target_code: '{$currentTargetCode}',
+              },
+        success: function (data) {
+            if(data == 'true'){                           
+                $('#modal-target-mail-id{$idTagHtml}').modal('hide');
+                $('#messages-attributes-id').html(' \
+                  <div class="alert alert-success alert-dismissible fade show" role="alert"> \
+                  Email inviata a {$email} correttamente \
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"> \
+                      <span aria-hidden="true">&times;</span> \
+                  </button> \
+                  </div> \
+                ');
+            }
+            if(data == 'false'){                           
+                $('#modal-target-mail-id{$idTagHtml}').modal('hide');
+                $('#messages-attributes-id').html(' \
+                  <div class="alert alert-danger alert-dismissible fade show" role="alert"> \
+                  Errore nell\'invio del messagio email \
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"> \
+                      <span aria-hidden="true">&times;</span> \
+                  </button> \
+                  </div> \
+                ');
+            }
+        }
+
+    });
+});
+JS
+            );
+        endif;
+        ?>
     </div>
   </div>
 </div>

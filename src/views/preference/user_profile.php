@@ -142,7 +142,7 @@ $customAsset = BootstrapItaliaDesignAsset::register($this);
             <div class="px-4 py-3 lightgrey-bg-c1 my-3">
                 <div class="row">
                     <div class="col-lg-3 mb-3 mb-lg-0">
-                        <span class="h5">Email di servizio</span>
+                        <span class="h5">Email</span>
                     </div>
                     <div class="col-lg-6 d-flex align-items-center">
                         <small><?= $userProfile->user->email ?></small>

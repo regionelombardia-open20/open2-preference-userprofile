@@ -49,7 +49,7 @@ class PersonalData extends Model
             'name' => Yii::t('preferenceuser', 'Nome'),
             'surname' => Yii::t('preferenceuser', 'Cognome'),
             'gender' => Yii::t('preferenceuser', 'Sesso'),
-            'email' => Yii::t('preferenceuser', 'Email di servizio'),
+            'email' => Yii::t('preferenceuser', 'Email'),
             'birth_date' => Yii::t('preferenceuser', 'Data di nascita'),
             'residence_province' => Yii::t('preferenceuser', 'Provincia'),
             'residence_city' => Yii::t('preferenceuser', 'Comune'),

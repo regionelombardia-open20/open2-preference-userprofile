@@ -716,7 +716,7 @@ class RegistrationController extends BackendController
                     $user = CurrentUser::isPlatformGuest() ? null : Yii::$app->user;
                     /** @var UserOtpCode $otp */
                     $otp = UserProfileUtility::generateOPT($user);
-                    EmailUtility::sendUserMailValidationEmailOtp($otp->otp_code, $email, 'Lombardia Informa, validazione email di servizio');
+                    EmailUtility::sendUserMailValidationEmailOtp($otp->otp_code, $email, 'Lombardia Informa, validazione email');
                     $toret['status'] = 'ok';
                 }
             } catch (NotificationEmailException $e) {

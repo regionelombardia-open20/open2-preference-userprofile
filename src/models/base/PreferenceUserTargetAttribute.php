@@ -112,7 +112,7 @@ class PreferenceUserTargetAttribute extends Record
                 $this->trigger(self::EVENT_EMAIL_MODIFIED);
             }
         } catch (NotificationEmailException $e) {
-            $this->addError('email', Yii::t('preferenceuser', 'Mail non modificata. Impossibile inviare la comunicazione...'));
+            $this->addError('email', Yii::t('preferenceuser', 'Email non modificata. Impossibile inviare la comunicazione...'));
             return false;
         }
 

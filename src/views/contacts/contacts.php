@@ -29,8 +29,8 @@ $bootstrapItaliaAsset = BootstrapItaliaDesignAsset::register($this);
 
 
         <div class="h5">Assistenza tecnica</div>
-        <p><strong>Se hai domande tecniche o difficoltà nell’utilizzo di questo sito, puoi compilare il modulo in questa pagina</strong> <br>
-        <a href="https://www.regione.lombardia.it/wps/portal/istituzionale/HP/DettaglioRedazionale/servizi-e-informazioni/cittadini/diritti-e-tutele/identita-digitale-accesso-servizi-online" target="_blank" title="Vai alla pagina informazioni">Informazioni su accesso ai servizi regionali con le credenziali SPID, Carta Nazionale dei Servizi (CNS), Carta di Identità Elettronica (CIE) ed eIDAS (Identificazione Elettronica Europea).</a>
+        <p>Se vuoi saperne di più sulle modalità di accesso ai servizi regionali con i sistemi di identità digitale (ai sensi del Titolo III del DL 16 luglio 2020 n. 76 - DL Semplificazioni), ovvero SPID,
+Carta Nazionale dei Servizi (CNS), Carta di Identità Elettronica (CIE) ed eIDAS, consulta il <a href="https://www.regione.lombardia.it/wps/portal/istituzionale/HP/DettaglioRedazionale/servizi-e-informazioni/cittadini/diritti-e-tutele/identita-digitale-accesso-servizi-online" target="_blank" title="Vai alla pagina informazioni">Portale di Regione Lombardia</a>
         </p>
 
         <?php

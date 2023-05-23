@@ -111,7 +111,7 @@ class StepPersonalData extends Model
         if ($this->$attribute != Yii::$app->session->get('IDM')['emailAddress']) {
             /** @var UserOtpCode $otp */
             $otp = UserProfileUtility::generateOPT();
-            EmailUtility::sendUserMailValidationEmailOtp($otp->otp_code, $this->$attribute,'Lombardia Informa, validazione email di servizio');
+            EmailUtility::sendUserMailValidationEmailOtp($otp->otp_code, $this->$attribute,'Lombardia Informa, validazione email');
 
             $this->addError($attribute, 'L\'email inserita è diversa da quella ricevuta dal sistema di autenticazione. E\' stata inviata una mail all\'indirizzo indicato con un codice di validazione da inserire nel campo qui a fianco. Il codice rimane valido per 5 min dall\'invio');
             $this->error_class_email = 'alert alert-success mt-1';

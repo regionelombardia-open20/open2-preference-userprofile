@@ -166,13 +166,13 @@ $form = ActiveForm::begin([
                 <?php
                 $params = [
                     'id' => 'preference-email-id',
-                    'label' => Yii::t('preferenceuser', 'Indirizzo email di servizio'),
+                    'label' => Yii::t('preferenceuser', 'Indirizzo email'),
                     'readonly' => ($model->getScenario() == \preference\userprofile\models\StepPersonalData::SCENARIO_OTP)
                 ];
                 if (empty($model->email)) {
                     $params = [
                         'id' => 'preference-email-id',
-                        'label' => Yii::t('preferenceuser', 'Indirizzo email di servizio'),
+                        'label' => Yii::t('preferenceuser', 'Indirizzo email'),
                         'readonly' => ($model->getScenario() == \preference\userprofile\models\StepPersonalData::SCENARIO_OTP),
                         'value' => isset($idmData['emailAddress'])? $idmData['emailAddress']: '',
                     ];

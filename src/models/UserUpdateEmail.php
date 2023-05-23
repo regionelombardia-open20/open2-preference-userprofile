@@ -79,7 +79,7 @@ class UserUpdateEmail extends Model
 
             /** @var UserOtpCode $otp */
             $otp = UserProfileUtility::generateOPT(Yii::$app->user);
-            EmailUtility::sendUserMailValidationEmailOtp($otp->otp_code, $this->$attribute,'Lombardia Informa, validazione email di servizio');
+            EmailUtility::sendUserMailValidationEmailOtp($otp->otp_code, $this->$attribute,'Lombardia Informa, validazione email');
 
             $this->addError($attribute, 'E\' stata inviata una mail all\'indirizzo indicato con un codice di validazione da inserire nel campo qui sotto. Il codice rimane valido per 5 min dall\'invio');
             $this->error_class_email = 'alert alert-success mt-1';
