@@ -92,7 +92,20 @@ $bootstrapItaliaAsset = BootstrapItaliaDesignAsset::register($this);
                       <?php
                         if ($key == PreferenceChannel::APP_ID):
                         ?>
+
+                        <?php
+                            // se per il canale APP l'utente ha attivato la preferenza allora in hiddel passo il valore così verrà mantenuta la scleta
+                            // con il checkbox disattivato pur essendo checked non viene passato il valore e queindi non lo tengo in considerazione in fase di salvataggio del dato
+                            // perderei la scelta...
+                            if ($checked == 'checked'):
+                                ?>
+                                <input type="hidden" name="UserChannel[channels][]" value="<?= $key ?>">
+                            <?php
+                            endif;
+                        ?>
+
                           <input disabled id="checkbox-disabled" type="checkbox" name="UserChannel[channels][]" value="<?= $key ?>" <?= $checked ?>>
+
                           <?php
                           else:
                           ?>                      
