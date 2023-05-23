@@ -16,8 +16,6 @@ use open20\design\components\bootstrapitalia\ActiveForm;
 use open20\amos\core\helpers\Html;
 use yii\helpers\Url;
 use preference\userprofile\utility\UserProfileUtility;
-
-$this->title = 'Dati personali';
 ?>
 
 <?php
@@ -65,10 +63,10 @@ $form = ActiveForm::begin([
 
 
 
-<?php
+<!-- < ?php
 //\yii\helpers\VarDumper::dump(UserProfileUtility::getIDMFields(null), 3, true);
 //\yii\helpers\VarDumper::dump($idmData, 3, true);
-?>
+?> -->
 
 
 
@@ -124,21 +122,16 @@ $form = ActiveForm::begin([
         </div>
         <div class="row variable-gutters">
             <div class="col-md-4">
-
                 <?=
                     $form->field($model, 'birth_date')->inputCalendar(['placeholder' => 'dd/mm/YYYY'], 'd/m/Y')
                 ?>
-
             </div>
-            <div class="col-md-4">
-
+            <div class="col-md-4 select-provincia">
                 <?=
                     $form->field($model, 'residence_province')->select( $items,['placeholder' => 'Scegli una provincia', 'id' => 'residence_province-id'])
                 ?>
-
             </div>
-            <div class="col-md-4">
-
+            <div class="col-md-4 select-comune">
                <?=
                    $form->field($model, 'residence_city')->select( null,[
                        'placeholder' => 'Scegli un comune',
@@ -146,24 +139,23 @@ $form = ActiveForm::begin([
                        'related-id' => 'residence_province-id',
                        ])
                ?>
-
             </div>
 
-            <?php
+            <!-- < ?php
                 /*
                     <div class="col-md-4">
-                        <?= $form->field($model, 'fiscal_code')->textInput([
+                        < ?= $form->field($model, 'fiscal_code')->textInput([
                                 'aria-describedby' => 'Perchè devo fornire il mio Codice Fiscale?',
                                 'infoTooltip' => 'Questo dato consentirà il tuo riconoscimento come utente del sistema anche in caso di accesso tramite SPID, in questo modo non rischierai di ricevere più volte lo stesso messaggio',
                         ]); ?>
                     </div>
                 */
             ?>
-
-    </div>
-
+            -->
+        </div>
+    </div>                       
     <div class="credenziali-container">
-<!--        <h2 class="mb-3 text-uppercase h5">Credenziali</h2>-->
+        <!--        <h2 class="mb-3 text-uppercase h5">Credenziali</h2>-->
         <div class="row variable-gutters pt-3">
             <div class="col-md-4">
                 <?php
@@ -196,7 +188,7 @@ $form = ActiveForm::begin([
                     <?= $form->field($model, 'auth_code')->textInput(['value' => '']) ?>
                 </div>
                 <div class="col-md-4">
-                <button type="submit" class="btn btn-tertiary" id="send-new-auth-code">Invia nuovo codice</button>
+                    <button type="submit" class="btn btn-tertiary" id="send-new-auth-code">Invia nuovo codice</button>
                     <div id="status-send"></div>
                 </div>
                 <?php
@@ -228,119 +220,57 @@ JS
                     \yii\web\View::POS_READY
                 );
 
-
-
                endif;
             ?>
-
-            <?php
-            /*
-            ?>
-            <div class="col-md-4">
-                <?= $form->field($model, 'password')->passwordInput([
-                    'label' => Yii::t('preferenceuser', 'Imposta password'),
-                    'helperTooltip' => 'La password deve contenere almeno: 8 caratteri, lettere maiuscole e minuscole ed almeno un numero'
-                ])
-                ?>
-            </div>
-
-            <div class="col-md-4">
-                <?= $form->field($model, 'password_repeat')->passwordInput([
-                    'label' => Yii::t('preferenceuser', 'Ripeti password')
-                ]) ?>
-            </div>
-            <?php
-            */
-            ?>
-
-
-
         </div>
-
-        <?php
-        /*
-        ?>
-        <div class=" pt-5  text-center">
-
-        <?= Html::tag('span', Html::encode('Se sei già registrato a Lombardia Informa '), ['class' => 'text-muted username mr-sm-2']) ?>
-
-
-
-            <?= Html::a('Accedi', Url::to('/preferenceuser/preference/settings')) ?>
-        </div>
-        <?php
-        */
-        ?>
-
-
-
-
-
     </div>
-
-
-
-
-
-
-
-
-
-
-
 </div>
+
 
 <div class="container">
     <div class="d-flex justify-content-center justify-content-sm-between mb-0 mb-sm-5">
+        <div>
+            <?php
+            echo Html::a(
+                Yii::t('preferenceuser', 'Annulla'),
+                ['/'],
+                [
+                    'class' => 'btn btn-outline-primary d-none d-sm-block px-5',
+                    'title' => Yii::t('preferenceuser', 'Torna in home page'),
+                ]
+            );
+            ?>
+        </div>
+        <div class="d-flex justify-content-center">
+            <!-- < ?php
+            //        echo Html::a(
+            //            Yii::t('preferenceuser', 'Indietro'),
+            //            ['preferences'],
+            //            [
+            //                'class' => 'btn btn-outline-primary mr-2 px-5',
+            //                'title' => Yii::t('preferenceuser', 'Torna allo step precedente'),
+            //            ]
+            //        );
+            ?> -->
 
-
-    <div>
-        <?php
-        echo Html::a(
-            Yii::t('preferenceuser', 'Annulla'),
-            ['/'],
-            [
-                'class' => 'btn btn-outline-primary d-none d-sm-block px-5',
-                'title' => Yii::t('preferenceuser', 'Torna in home page'),
-            ]
-        );
-        ?>
-
+            <?php
+            echo Html::submitButton(
+                'Continua',
+                ['class' => 'btn btn-primary px-5', 'name' => 'submit-action', 'value' => 'forward']
+            );
+            ?>
+        </div>
     </div>
-    <div class="d-flex justify-content-center">
-        <?php
-//        echo Html::a(
-//            Yii::t('preferenceuser', 'Indietro'),
-//            ['preferences'],
-//            [
-//                'class' => 'btn btn-outline-primary mr-2 px-5',
-//                'title' => Yii::t('preferenceuser', 'Torna allo step precedente'),
-//            ]
-//        );
-        ?>
 
+    <div class="mobile-wizard-button mb-5 d-flex justify-content-center d-sm-none">
         <?php
-        echo Html::submitButton(
-            'Continua',
-            ['class' => 'btn btn-primary px-5', 'name' => 'submit-action', 'value' => 'forward']
-        );
+        echo Html::a(Yii::t('preferenceuser', 'Annulla registrazione'), ['/'], [
+            'class' => 'text-decoration-none text-secondary pt-4 px-5',
+            'title' => Yii::t('preferenceuser', 'Torna in home page'),
+        ]);
         ?>
     </div>
-</div>
-
-<div class="mobile-wizard-button mb-5 d-flex justify-content-center d-sm-none">
-    <?php
-    echo Html::a(Yii::t('preferenceuser', 'Annulla registrazione'), ['/'], [
-        'class' => 'text-decoration-none text-secondary pt-4 px-5',
-        'title' => Yii::t('preferenceuser', 'Torna in home page'),
-    ]);
-    ?>
-</div>
-
 </div>
 
 <?php
-//\yii\helpers\VarDumper::dump($model->getScenario(),3,true);
-//\yii\helpers\VarDumper::dump($model->errors,3,true);
-
 ActiveForm::end(); ?>

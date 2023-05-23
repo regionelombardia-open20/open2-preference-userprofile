@@ -114,7 +114,7 @@ Carta Nazionale dei Servizi (CNS), Carta di Identità Elettronica (CIE) ed eIDAS
           <div class="col-12">
             <?= $form->field($model, 'reCaptcha')->widget(\himiklab\yii2\recaptcha\ReCaptcha2::className(), [
                 'configComponentName' => 'myReCaptcha'
-            ])->label('') ?>
+            ])->label(false) ?>
           </div>
           <div class="col-12">
             <?= $form->field($model, 'privacy')->checkBox(

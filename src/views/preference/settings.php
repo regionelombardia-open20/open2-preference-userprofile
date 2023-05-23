@@ -109,7 +109,7 @@ switch ($currentTargetCode) {
                     <div class="link-list-wrapper">
                         <ul class="mb-0 mt-4 link-list"> 
                             <li>
-                                <h3 class="mb-0">Le tue lingue:</h3></ul>
+                                <h3 class="mb-0">Le tue lingue:</h3>
                             </li>
                         </ul>   
 
@@ -134,7 +134,7 @@ JS
                                 ],
                             ]);
                         ?>
-                        <input type="hidden" name="language" value="true" \>
+                        <input type="hidden" name="language" value="true">
                         <?php
                         /** @var PreferenceLanguage $language */
                         foreach ($languages as $language) {
@@ -528,7 +528,7 @@ JS
                     
                 
                 
-                <input type="hidden" name="target" value="<?= $tagRoot->codice ?>" \>
+                <input type="hidden" name="target" value="<?= $tagRoot->codice ?>" >
 
 
                 

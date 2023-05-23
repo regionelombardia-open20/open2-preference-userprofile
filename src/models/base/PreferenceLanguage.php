@@ -76,7 +76,7 @@ class PreferenceLanguage extends Record
     public function getLabelWithImage()
     {
         $urlImage = Url::to($this->icon);
-        return '<span class="d-inline-flex align-items-center"> <img src="'. $urlImage .'" alt="'. $this->name .'" width="20px" class="mr-2"/>' . $this->code . '</span>';
+        return '<span class="d-inline-flex align-items-center"> <img src="'. $urlImage .'" alt="'. $this->name .'" style="width:20px" class="mr-2"/>' . $this->code . '</span>';
 //        return '<span>' . $this->code . ' <img src="'. $urlImage .'" alt="'. $this->name .'" width="14px"/></span>';
     }
 

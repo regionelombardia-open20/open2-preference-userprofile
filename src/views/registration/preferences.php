@@ -69,8 +69,8 @@ $form = ActiveForm::begin([
     <?=$form->field($model, 'topics')->widget(CheckBoxListTopicsIcon::className(), [
         'choices' => $model->getCrossTopics(),
         'classContainer' => 'col-lg-3 col-6',
-        'baseIconsUrl' => '/img/icone-tematiche/',   
-    ]);?>
+        'baseIconsUrl' => '/img/icone-tematiche/',
+    ])->label(false);?>
 </div>
 
 <div class="container d-flex flex-row justify-content-center justify-content-sm-between mb-0 mb-sm-5">

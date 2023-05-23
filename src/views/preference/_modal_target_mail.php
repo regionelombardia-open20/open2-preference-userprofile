@@ -34,21 +34,21 @@ JS
       <?php
       if (!empty($targetAttributes->email)) :
       ?>
-        <div id="validate-mail-icon-id">
+        <span id="validate-mail-icon-id">
           <?= ($targetAttributes->validated_email_flag) ?
             '<span class="mdi mdi-check-circle design-theme-color-success md-24" data-toggle="tooltip" title="Email validata con successo"><span class="sr-only">Validato</span></span>' :
             '<span class="mdi mdi-alert-circle design-theme-color-danger md-24" data-toggle="tooltip" title="Email non validata"><span class="sr-only">Non validato</span></span>'; ?>
-        </div>
+        </span>
       <?php
       else :
       ?>
-        <div id="validate-mail-icon-id">
+        <span id="validate-mail-icon-id">
           <span class="mdi mdi-email md-24"><span class="sr-only"></span></span>
-        </div>
+        </span>
       <?php
       endif
       ?>
-      <div class="ml-2 mb-2">Email</div>
+      <span class="ml-2 mb-2">Email</span>
 
     </label>
 

@@ -30,26 +30,27 @@ JS
 <div class="d-flex my-3 align-items-baseline">
   <div class="form-group form-rounded mr-2 mb-0 w-75 pl-4">
     <input class="form-control-plaintext form-control" type="text" id="input-text-read-only-phone-<?= $idTagHtml ?>" placeholder="<?= $targetAttributes->phone ?>" disabled>
-    <label for="input-text-read-only-phone-<?= $idTagHtml ?>" class="w-auto d-flex align-items-center label-icon">
-      
+
+      <label for="input-text-read-only-phone-<?= $idTagHtml ?>" class="w-auto d-flex align-items-center label-icon">
     <?php
       if (!empty($targetAttributes->phone)) :
       ?>
-        <div id="validate-phone-icon-id<?= $idTagHtml ?>">
-        <?= ($targetAttributes->validated_phone_flag) ? 
-         '<span class="mdi mdi-check-circle design-theme-color-success md-24" data-toggle="tooltip" title="Cellulare validato con successo"><span class="sr-only">Validato</span></span>' :
-         '<span class="mdi mdi-alert-circle design-theme-color-danger md-24" data-toggle="tooltip" title="Cellulare non validato"><span class="sr-only">Non validato</span></span>'; ?>
-      </div>
+        <span id="validate-phone-icon-id<?= $idTagHtml ?>">
+          <?= ($targetAttributes->validated_phone_flag) ? 
+          '<span class="mdi mdi-check-circle design-theme-color-success md-24" data-toggle="tooltip" title="Cellulare validato con successo"><span class="sr-only">Validato</span></span>' :
+          '<span class="mdi mdi-alert-circle design-theme-color-danger md-24" data-toggle="tooltip" title="Cellulare non validato"><span class="sr-only">Non validato</span></span>'; ?>
+        </span>
       <?php
       else :
       ?>
-        <div id="validate-mail-icon-id">
+
+        <span id="validate-phone-icon-id">
           <span class="mdi mdi-cellphone-iphone md-24"><span class="sr-only"></span></span>
-        </div>
+        </span>
       <?php
       endif;
       ?>
-      <div class="ml-2 mb-2">Cellulare</div>
+      <span class="ml-2 mb-2">Cellulare</span>
     </label>
   </div>
   <a href="#" data-toggle="modal" data-target="#modal-target-phone-id<?= $idTagHtml ?>" class="tertiary-color text-decoration-none d-flex align-items-center">
@@ -272,8 +273,9 @@ endif
           <button type="submit" class="btn btn-primary w-100 w-sm-50 m-2" id="modal-target-phone-conferma<?= $idTagHtml ?>">Salva</button>
         </div>
       </div>
+        <?php ActiveForm::end(); ?>
     </div>
-    <?php ActiveForm::end(); ?>
+
 
   </div>
 </div>
