@@ -2,6 +2,7 @@
 namespace preference\userprofile\utility;
 
 use open20\amos\admin\models\UserOtpCode;
+use open20\amos\mobile\bridge\modules\v1\models\AccessTokens;
 use open20\amos\socialauth\models\SocialIdmUser;
 use open20\amos\socialauth\Module;
 use open20\amos\socialauth\utility\SocialAuthUtility;
@@ -196,6 +197,9 @@ class UserProfileUtility
 
             // Elimino IDM user...
             SocialAuthUtility::disconnectIdm($user->id);
+
+            $token = AccessTokens::findOne(['user_id' => $userProfile->user->id]);
+            $token->delete();
 
             $user->save(false);
             $userProfile->save(false);

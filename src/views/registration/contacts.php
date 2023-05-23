@@ -17,30 +17,147 @@ use yii\web\View;
 $idCittadini = 'target_cittadini-id';
 $this->title = 'Scelta contatti';
 
+// CITTADINI
 $this->registerJs(
     <<<JS
-
-    $("button[id^='scelta-target']").click(function(event) {
-        var dataTarget = $(this).attr("data-target-str");      
-        var accordionButton= $(this).find("input[id^='target_"+dataTarget+"']");
-        if(accordionButton.attr("checked")=="checked"){
-            $("#contact-input-"+dataTarget+"-id").val(null);
-            accordionButton.toggleClass("not-checked");
-            accordionButton.removeAttr("checked");
-            $("label[for^='contact-input-"+dataTarget+"-id']").toggleClass("active");
-        }else{
-            $("#contact-input-"+dataTarget+"-id").val('{$email}');
-            accordionButton.attr("checked", "checked");
-            accordionButton.toggleClass("not-checked");
-            $("label[for^='contact-input-"+dataTarget+"-id']").toggleClass("active");
-        } 
+    $("button[id^='scelta-target']").click(function(event) {        
         event.preventDefault();  
     });
 
+    $("#target_cittadini-id").change(function(event) {
+        $("#scelta-target-cittadini").trigger( "click" );
+    });
+       
+    $("#collapse-cittadini").on('show.bs.collapse', function (e) {
+        $("#target_cittadini-id").attr("disabled", "disabled");        
+        var dataTarget = $(this).attr("data-target-str"); 
+        if (!$("#contact-input-"+dataTarget+"-id").val()) {
+            $("#contact-input-"+dataTarget+"-id").val('{$email}');
+        } 
+    });
+    
+    $("#collapse-cittadini").on('shown.bs.collapse', function (e) {
+        $("#target_cittadini-id").removeAttr("disabled");
+        $("#target_cittadini-id").prop('checked', true);
+        var dataTarget = $(this).attr("data-target-str"); 
+        $("#contact-input-"+dataTarget+"-id").focus();
+    });
+    
+    $("#collapse-cittadini").on('hide.bs.collapse', function (e) {
+        $("#target_cittadini-id").attr("disabled", "disabled");   
+    });
+    
+    $("#collapse-cittadini").on('hidden.bs.collapse', function (e) {
+        $("#target_cittadini-id").removeAttr("disabled");
+        $("#target_cittadini-id").prop('checked', false);
+        var dataTarget = $(this).attr("data-target-str"); 
+        $("#contact-input-"+dataTarget+"-id").val(null);
+        $("#phone-input-"+dataTarget+"-id").val(null);
+    });
 JS
-,
+    ,
     View::POS_READY
 );
+
+
+// IMPRESA
+$this->registerJs(
+    <<<JS
+    $("button[id^='scelta-target']").click(function(event) {        
+        event.preventDefault();  
+    });
+
+    $("#target_impresa-id").change(function(event) {
+        $("#scelta-target-imprese").trigger( "click" );
+    });
+       
+    $("#collapse-imprese").on('show.bs.collapse', function (e) {
+        $("#target_impresa-id").attr("disabled", "disabled");        
+        var dataTarget = $(this).attr("data-target-str"); 
+        
+        console.log($("#contact-input-"+dataTarget+"-id").val());
+        
+        if (!$("#contact-input-"+dataTarget+"-id").val()) {
+            $("#contact-input-"+dataTarget+"-id").val('{$email}');
+        }        
+    });
+    
+    $("#collapse-imprese").on('shown.bs.collapse', function (e) {
+        $("#target_impresa-id").removeAttr("disabled");
+        $("#target_impresa-id").prop('checked', true);
+        var dataTarget = $(this).attr("data-target-str"); 
+        $("#contact-input-"+dataTarget+"-id").focus();
+    });
+    
+    $("#collapse-imprese").on('hide.bs.collapse', function (e) {
+        $("#target_impresa-id").attr("disabled", "disabled");   
+    });
+    
+    $("#collapse-imprese").on('hidden.bs.collapse', function (e) {
+        $("#target_impresa-id").removeAttr("disabled");
+        $("#target_impresa-id").prop('checked', false);
+        var dataTarget = $(this).attr("data-target-str"); 
+        $("#contact-input-"+dataTarget+"-id").val(null);
+        $("#phone-input-"+dataTarget+"-id").val(null);
+    });
+JS
+    ,
+    View::POS_READY
+);
+
+// ENTI E OPERATORI
+$this->registerJs(
+    <<<JS
+    $("button[id^='scelta-target']").click(function(event) {        
+        event.preventDefault();  
+    });
+
+    $("#target_enti_operatori-id").change(function(event) {
+        $("#scelta-target-enti-operatori").trigger( "click" );
+    });
+       
+    $("#collapse-enti-operatori").on('show.bs.collapse', function (e) {
+        $("#target_enti_operatori-id").attr("disabled", "disabled");        
+        var dataTarget = $(this).attr("data-target-str"); 
+        if (!$("#contact-input-"+dataTarget+"-id").val()) {
+            $("#contact-input-"+dataTarget+"-id").val('{$email}');
+        } 
+    });
+    
+    $("#collapse-enti-operatori").on('shown.bs.collapse', function (e) {
+        $("#target_enti_operatori-id").removeAttr("disabled");
+        $("#target_enti_operatori-id").prop('checked', true);
+        var dataTarget = $(this).attr("data-target-str"); 
+        $("#contact-input-"+dataTarget+"-id").focus();
+    });
+    
+    $("#collapse-enti-operatori").on('hide.bs.collapse', function (e) {
+        $("#target_enti_operatori-id").attr("disabled", "disabled");   
+    });
+    
+    $("#collapse-enti-operatori").on('hidden.bs.collapse', function (e) {
+        $("#target_enti_operatori-id").removeAttr("disabled");
+        $("#target_enti_operatori-id").prop('checked', false);
+        var dataTarget = $(this).attr("data-target-str"); 
+        $("#contact-input-"+dataTarget+"-id").val(null);
+        $("#phone-input-"+dataTarget+"-id").val(null);
+    });
+JS
+    ,
+    View::POS_READY
+);
+
+
+
+/**
+ * @var $this yii\web\View
+ */
+$this->registerCss("
+    .collapse-header:hover + .form-check > label {
+        text-decoration: underline;
+    }
+", View::POS_HEAD);
+
 
 ?>
 
@@ -101,22 +218,19 @@ $form = ActiveForm::begin([
     endif;
     ?>
     
-    <div class=" cittadini-accordion pb-4">
-        <div class="collapse-div collapse-lg shadow-sm border-0 rounded px-4 pt-4 pb-2" role="tablist">
+    <div class="cittadini-accordion pb-4">
+        <div class="collapse-div collapse-lg shadow-sm border-0 rounded px-4 pt-4 pb-2" role="tablist" style="position:relative">
             <div class="collapse-header" id="cittadini-collapse-heading">
-                <button class="form-check m-0 border-0 p-0" id="scelta-target-cittadini" data-toggle="collapse" data-target="#collapse-cittadini" aria-expanded="false" aria-controls="collapse-cittadini"
-                    data-target-str='cittadini'>
-                    <div class="d-flex align-items-center">
-                        <!--< ?= $form->field($model, 'target_cittadini')->checkbox(['id' => 'target_cittadini-id']) ?>-->
-                        <input type="checkbox" class="mr-2 <?= $model->target_cittadini ? '' : 'not-checked'; ?>" id="target_cittadini-id" name="StepContacts[target_cittadini]" <?= $model->target_cittadini ? 'checked' : ''; ?> >
-                        <label class="custom-control-label lead color-primary mb-0 border-0 py-0 h-auto" for="target_cittadini-id">
-                            <span class="h5 font-weight-normal primary-color">Sono interessato a informazioni per <strong>Cittadini</strong></span>
-                        </label>
-                    </div>
+                <button class="m-0 border-0 p-0" id="scelta-target-cittadini" data-toggle="collapse" data-target="#collapse-cittadini" aria-expanded="false" aria-controls="collapse-cittadini">
                 </button>
-
             </div>
-            <div id="collapse-cittadini" class="collapse <?= $model->target_cittadini ? 'show' : ''; ?>" role="tabpanel" aria-labelledby="cittadini-collapse-heading">
+            <div class="d-flex align-items-center form-check" style="position:absolute;top:24px;">
+                <input type="checkbox" class="mr-2 <?= $model->target_cittadini ? '' : 'not-checked'; ?>" id="target_cittadini-id" name="StepContacts[target_cittadini]" <?= $model->target_cittadini ? 'checked' : ''; ?> >
+                <label class="custom-control-label lead color-primary mb-0 border-0 py-0 h-auto" for="target_cittadini-id">
+                    <span class="h5 font-weight-normal primary-color">Sono interessato a informazioni per <strong>Cittadini</strong></span>
+                </label>
+            </div>
+            <div id="collapse-cittadini" class="collapse <?= $model->target_cittadini ? 'show' : ''; ?>" role="tabpanel" aria-labelledby="cittadini-collapse-heading" data-target-str='cittadini'>
                 <div class="collapse-body mt-4 pt-4 pb-0 border-top tertiary-color">
                     <p class=""><strong>Dove vuoi essere contattato?</strong><br>
                         Per poter ricevere le comunicazioni di tuo interesse è necessario compilare le modalità di contatto</p>
@@ -125,7 +239,7 @@ $form = ActiveForm::begin([
                             <?= $form->field($model, 'email_cittadini')->textInput(['id' => 'contact-input-cittadini-id']) ?>
                         </div>
                         <div class="col-md-5 offset-md-1">
-                            <?= $form->field($model, 'phone_cittadini')->textInput() ?>
+                            <?= $form->field($model, 'phone_cittadini')->textInput(['id' => 'phone-input-cittadini-id']) ?>
                         </div>
 
                     </div>
@@ -136,22 +250,18 @@ $form = ActiveForm::begin([
         </div>
     </div>
     <div class="imprese-accordion py-4">
-
-        <div class="collapse-div collapse-lg shadow-sm border-0 rounded px-4 pt-4 pb-2" role="tablist">
+        <div class="collapse-div collapse-lg shadow-sm border-0 rounded px-4 pt-4 pb-2" role="tablist" style="position:relative">
             <div class="collapse-header" id="imprese-collapse-heading">
-                <button class="form-check m-0 border-0 p-0" id="scelta-target-imprese" data-toggle="collapse" data-target="#collapse-imprese" aria-expanded="false" aria-controls="collapse-imprese" 
-                    data-target-str="impresa">
-                    <div class="d-flex align-items-center">
-                        <!--< ?= $form->field($model, 'target_impresa')->checkbox(['id' => 'target_impresa-id']) ?>-->
-
-                        <input type="checkbox" class="mr-2 <?= $model->target_impresa ? '' : 'not-checked'; ?>" id="target_impresa-id" name="StepContacts[target_impresa]" <?= $model->target_impresa ? 'checked' : ''; ?>>
-                        <label class="custom-control-label lead color-primary mb-0 border-0 py-0 h-auto" for="target_impresa-id">
-                            <span class="h5 font-weight-normal primary-color">Sono interessato a informazioni per <strong>Imprese</strong></span>
-                        </label>
-                    </div>
+                <button class="m-0 border-0 p-0" id="scelta-target-imprese" data-toggle="collapse" data-target="#collapse-imprese" aria-expanded="false" aria-controls="collapse-imprese">
                 </button>
             </div>
-            <div id="collapse-imprese" class="collapse <?= $model->target_impresa ? 'show' : ''; ?>" role="tabpanel" aria-labelledby="imprese-collapse-heading">
+            <div class="d-flex align-items-center form-check" style="position:absolute;top:24px;">
+                <input type="checkbox" class="mr-2 <?= $model->target_impresa ? '' : 'not-checked'; ?>" id="target_impresa-id" name="StepContacts[target_impresa]" <?= $model->target_impresa ? 'checked' : ''; ?> >
+                <label class="custom-control-label lead color-primary mb-0 border-0 py-0 h-auto" for="target_impresa-id">
+                    <span class="h5 font-weight-normal primary-color">Sono interessato a informazioni per <strong>Imprese</strong></span>
+                </label>
+            </div>
+            <div id="collapse-imprese" class="collapse <?= $model->target_impresa ? 'show' : ''; ?>" role="tabpanel" aria-labelledby="imprese-collapse-heading" data-target-str='impresa'>
                 <div class="collapse-body mt-4 pt-4 pb-0 border-top tertiary-color">
                     <p class=""><strong>Dove vuoi essere contattato?</strong><br>
                         Per poter ricevere le comunicazioni di tuo interesse è necessario compilare le modalità di contatto</p>
@@ -160,7 +270,7 @@ $form = ActiveForm::begin([
                             <?= $form->field($model, 'email_impresa')->textInput(['id' => 'contact-input-impresa-id']) ?>
                         </div>
                         <div class="col-md-5 offset-md-1">
-                            <?= $form->field($model, 'phone_impresa')->textInput() ?>
+                            <?= $form->field($model, 'phone_impresa')->textInput(['id' => 'phone-input-impresa-id']) ?>
                         </div>
 
                     </div>
@@ -169,23 +279,19 @@ $form = ActiveForm::begin([
         </div>
     </div>
 
-    <div class=" enti-operatori-accordion pt-4">
-        <!--copia codice-->
-        <div class="collapse-div collapse-lg shadow-sm border-0 rounded px-4 pt-4 pb-2" role="tablist">
+    <div class="enti-operatori-accordion pt-4">
+        <div class="collapse-div collapse-lg shadow-sm border-0 rounded px-4 pt-4 pb-2" role="tablist" style="position:relative">
             <div class="collapse-header" id="enti-operatori-collapse-heading">
-                <button class="form-check m-0 border-0 p-0" id="scelta-target-enti-operatori" data-toggle="collapse" data-target="#collapse-enti-operatori" aria-expanded="false" aria-controls="collapse-enti-operatori" 
-                    data-target-str="enti_operatori">
-                    <div class="d-flex align-items-center">
-                        <!-- < ?= $form->field($model, 'target_enti_operatori')->checkbox(['id' => 'target_enti_operatori-id']) ?>-->
-                        <input type="checkbox" class="mr-2 <?= $model->target_enti_operatori ? '' : 'not-checked'; ?>" id="target_enti_operatori-id" name="StepContacts[target_enti_operatori]" <?= $model->target_enti_operatori ? 'checked' : ''; ?>>
-                        <label class="custom-control-label lead color-primary mb-0 border-0 py-0 h-auto" for="target_enti_operatori-id">
-                            <span class="h5 font-weight-normal primary-color">Sono interessato a informazioni per <strong>Enti/operatori</strong></span>
-                        </label>
-                    </div>
+                <button class="m-0 border-0 p-0" id="scelta-target-enti-operatori" data-toggle="collapse" data-target="#collapse-enti-operatori" aria-expanded="false" aria-controls="collapse-enti-operatori">
                 </button>
-
             </div>
-            <div id="collapse-enti-operatori" class="collapse <?= $model->target_enti_operatori ? 'show' : ''; ?>" role="tabpanel" aria-labelledby="enti-operatori-collapse-heading">
+            <div class="d-flex align-items-center form-check" style="position:absolute;top:24px;">
+                <input type="checkbox" class="mr-2 <?= $model->target_enti_operatori ? '' : 'not-checked'; ?>" id="target_enti_operatori-id" name="StepContacts[target_enti_operatori]" <?= $model->target_enti_operatori ? 'checked' : ''; ?> >
+                <label class="custom-control-label lead color-primary mb-0 border-0 py-0 h-auto" for="target_enti_operatori-id">
+                    <span class="h5 font-weight-normal primary-color">Sono interessato a informazioni per <strong>Enti/operatori</strong></span>
+                </label>
+            </div>
+            <div id="collapse-enti-operatori" class="collapse <?= $model->target_enti_operatori ? 'show' : ''; ?>" role="tabpanel" aria-labelledby="enti-operatori-collapse-heading" data-target-str='enti_operatori'>
                 <div class="collapse-body mt-4 pt-4 pb-0 border-top tertiary-color">
                     <p class=""><strong>Dove vuoi essere contattato?</strong><br>
                         Per poter ricevere le comunicazioni di tuo interesse è necessario compilare le modalità di contatto</p>
@@ -194,7 +300,7 @@ $form = ActiveForm::begin([
                             <?= $form->field($model, 'email_enti_operatori')->textInput(['id' => 'contact-input-enti_operatori-id']) ?>
                         </div>
                         <div class="col-md-5 offset-md-1">
-                            <?= $form->field($model, 'phone_enti_operatori')->textInput() ?>
+                            <?= $form->field($model, 'phone_enti_operatori')->textInput(['id' => 'phone-input-enti_operatori-id']) ?>
                         </div>
                     </div>
 
@@ -203,12 +309,12 @@ $form = ActiveForm::begin([
                 </div>
 
             </div>
-            
+
 
         </div>
 
     </div>
-    
+
 
 </div>
 
