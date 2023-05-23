@@ -72,7 +72,7 @@ $customAsset = BootstrapItaliaDesignAsset::register($this);
                         </div>
                         <div class="col-md-4">
                             <div class="label-style tertiary-color">Sesso</div>
-                            <?= $form->field($model, 'gender')->radioList($model->getGenderChoices()) ?>
+                            <?= $form->field($model, 'gender')->radioList($model->getGenderChoices())->label(false) ?>
                         </div>
                     </div>
                     <div class="row variable-gutters">

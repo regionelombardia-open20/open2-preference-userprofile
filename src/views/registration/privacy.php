@@ -21,15 +21,30 @@ $bootstrapItaliaAsset = BootstrapItaliaDesignAsset::register($this);
 ?>
 
 <?php
+
+$this->registerJs(
+    <<<JS
+
+$(document).on("beforeSubmit", "#privacy-form", function (event, messages) {
+    $(this).find(':submit').attr('disabled', true);
+    return true;
+});
+
+JS
+    ,
+    \yii\web\View::POS_READY
+);
+
 $form = ActiveForm::begin([
     'options' => [
-        'id' => 'preferencies-form',
+        'id' => 'privacy-form',
         'data-fid' => (isset($fid)) ? $fid : 0,
         'data-field' => ((isset($dataField)) ? $dataField : ''),
         'data-entity' => ((isset($dataEntity)) ? $dataEntity : ''),
         'enctype' => 'multipart/form-data',
     ],
 ]);
+
 ?>
 
 

@@ -55,6 +55,14 @@ class RegistrationController extends BackendController
     private $session = null;
     private $idmData = null;
 
+    private $registrationSteps = [
+        'preferences',
+        'personal-data',
+        'contacts',
+        'privacy',
+        'registrate-user',
+    ];
+
     public function init()
     {
         $this->session = \Yii::$app->session;
@@ -63,7 +71,12 @@ class RegistrationController extends BackendController
             $this->session->open();
         }
 
-//        VarDumper::dump(Yii::$app->controller->, 3, true); die;
+        // controllo... se già loggato e accedi agli step della registrazione vai a settings!
+        $actionId = Yii::$app->controller->action->id;
+        if (in_array($actionId,$this->registrationSteps) && (!empty(Yii::$app->user))) {
+            return $this->goHome();
+        }
+
         $this->idmData = Yii::$app->session->get('IDM');
 
         // Layout Bootstrap Italia
@@ -501,37 +514,41 @@ class RegistrationController extends BackendController
 
             // CREO gli attributi all'utente su ogni target anche se vuoti!
 
-            $uta = new PreferenceUserTargetAttribute();
-            $uta->sendEmailValidationComunication = false;
-            $uta->email = empty(trim($contactsModel->email_cittadini)) ? null : $contactsModel->email_cittadini;
-            $uta->validated_email_flag = false;
-            $uta->phone = empty(trim($contactsModel->phone_cittadini)) ? null : $contactsModel->phone_cittadini;
-            $uta->validated_phone_flag = false;
-            $uta->target_code = TargetTagUtility::getTargetByKey('cittadino')->codice;
-            $uta->user_id = $user->id;
-            $uta->save(false);
+            $uta1 = new PreferenceUserTargetAttribute();
+            $uta1->sendEmailValidationComunication = false;
+            $uta1->email = empty(trim($contactsModel->email_cittadini)) ? null : $contactsModel->email_cittadini;
+            $uta1->validated_email_flag = false;
+            $uta1->phone = empty(trim($contactsModel->phone_cittadini)) ? null : $contactsModel->phone_cittadini;
+            $uta1->validated_phone_flag = false;
+            $uta1->target_code = TargetTagUtility::getTargetByKey('cittadino')->codice;
+            $uta1->user_id = $user->id;
+            $uta1->save(false);
 
-            $uta = new PreferenceUserTargetAttribute();
-            $uta->sendEmailValidationComunication = false;
-            $uta->email = empty(trim($contactsModel->email_impresa)) ? null : $contactsModel->email_impresa;
-            $uta->validated_email_flag = false;
-            $uta->phone = empty(trim($contactsModel->phone_impresa)) ? null : $contactsModel->phone_impresa;
-            $uta->validated_phone_flag = false;
-            $uta->target_code = TargetTagUtility::getTargetByKey('impresa')->codice;
-            $uta->user_id = $user->id;
-            $uta->save(false);
+            $uta2 = new PreferenceUserTargetAttribute();
+            $uta2->sendEmailValidationComunication = false;
+            $uta2->email = empty(trim($contactsModel->email_impresa)) ? null : $contactsModel->email_impresa;
+            $uta2->validated_email_flag = false;
+            $uta2->phone = empty(trim($contactsModel->phone_impresa)) ? null : $contactsModel->phone_impresa;
+            $uta2->validated_phone_flag = false;
+            $uta2->target_code = TargetTagUtility::getTargetByKey('impresa')->codice;
+            $uta2->user_id = $user->id;
+            $uta2->save(false);
 
-            $uta = new PreferenceUserTargetAttribute();
-            $uta->sendEmailValidationComunication = false;
-            $uta->email = empty(trim($contactsModel->email_enti_operatori)) ? null : $contactsModel->email_enti_operatori;
-            $uta->validated_email_flag = false;
-            $uta->phone = empty(trim($contactsModel->phone_enti_operatori)) ? null : $contactsModel->phone_enti_operatori;
-            $uta->validated_phone_flag = false;
-            $uta->target_code = TargetTagUtility::getTargetByKey('enteeoperatore')->codice;
-            $uta->user_id = $user->id;
-            $uta->save(false);
+            $uta3 = new PreferenceUserTargetAttribute();
+            $uta3->sendEmailValidationComunication = false;
+            $uta3->email = empty(trim($contactsModel->email_enti_operatori)) ? null : $contactsModel->email_enti_operatori;
+            $uta3->validated_email_flag = false;
+            $uta3->phone = empty(trim($contactsModel->phone_enti_operatori)) ? null : $contactsModel->phone_enti_operatori;
+            $uta3->validated_phone_flag = false;
+            $uta3->target_code = TargetTagUtility::getTargetByKey('enteeoperatore')->codice;
+            $uta3->user_id = $user->id;
+            $uta3->save(false);
 
-            $this->sendUniqueEmailValidationToken($user->id, $transaction);
+            // controllo un evnetuale errore in inserimento attributi
+            $errMessage = "Errore di comunicazione";
+            if (empty($uta1->id) || empty($uta2->id) || empty($uta3->id)) {
+                throw new CreationRegisterdUserException($errMessage);
+            }
 
             // aggiornamento sistema di provenienza
             /** @var \preference\userprofile\models\UserProfile $upForOriginSystem */
@@ -566,16 +583,30 @@ class RegistrationController extends BackendController
             }
 
             $transaction->commit();
-            // 
+
+            $this->sendUniqueEmailValidationToken($user->id);
+
         } catch (CreationRegisterdUserException $ue) {
             $transaction->rollBack();
-            throw $ue;
-        } catch (LoadWizardDataException $ue) {
+
+            \Yii::getLogger()->log($ue->getMessage(), \yii\log\Logger::LEVEL_ERROR);
+            \Yii::getLogger()->log($ue->getTraceAsString(), \yii\log\Logger::LEVEL_ERROR);
+            \Yii::$app->getSession()->addFlash('danger', \Yii::t('app', "Creazione utente: Errore di comunicazione!"));
+            return $this->redirect('privacy');
+        } catch (LoadWizardDataException $de) {
             $transaction->rollBack();
-            throw $ue;
+
+            \Yii::getLogger()->log($de->getMessage(), \yii\log\Logger::LEVEL_ERROR);
+            \Yii::getLogger()->log($de->getTraceAsString(), \yii\log\Logger::LEVEL_ERROR);
+            \Yii::$app->getSession()->addFlash('danger', \Yii::t('app', "Controllo dati inseriti: Errore di comunicazione!"));
+            return $this->redirect('privacy');
         } catch (\Exception $e) {
             $transaction->rollBack();
-            throw $e;
+
+            \Yii::getLogger()->log($e->getMessage(), \yii\log\Logger::LEVEL_ERROR);
+            \Yii::getLogger()->log($e->getTraceAsString(), \yii\log\Logger::LEVEL_ERROR);
+            \Yii::$app->getSession()->addFlash('danger', \Yii::t('app', "Errore di comunicazione!"));
+            return $this->redirect('privacy');
         }
 
         $this->view->params['customClassMainContent'] = 'container';
@@ -584,9 +615,6 @@ class RegistrationController extends BackendController
         \Yii::$app->user->login($user, $loginTimeout);
         $this->session->remove('IDM');
         return $this->goHome();
-//        return $this->render("registrate_user_success", [
-//            'email' =>  $user->email
-//        ]);
     }
 
     /**
@@ -608,7 +636,7 @@ class RegistrationController extends BackendController
     /**
      * 
      */
-    private function sendUniqueEmailValidationToken($userId, $transaction)
+    private function sendUniqueEmailValidationToken($userId)
     {
         $listOfAttributes = PreferenceUserTargetAttribute::findAll(['user_id' => $userId]);
         $comunicationArray = [];
