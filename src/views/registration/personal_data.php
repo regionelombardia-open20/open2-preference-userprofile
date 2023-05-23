@@ -116,7 +116,7 @@ $form = ActiveForm::begin([
             <div class="col-md-4">
                 <?= $form->field($model, 'gender')->radioList($model->getGenderChoices(),[
                     'general-list-label' => Yii::t('preferenceuser', 'Sesso')
-                ]) ?>
+                ])->label('') ?>
             </div>
         </div>
         <div class="row variable-gutters">

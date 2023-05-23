@@ -17,9 +17,13 @@ use preference\userprofile\models\PreferenceUserTargetAttribute;
 use preference\userprofile\utility\TargetTagUtility;
 use yii\helpers\VarDumper;
 use yii\web\View;
+use preference\userprofile\models\PreferenceLanguage;
 
 /**
  * @var PreferenceUserTargetAttribute $targetAttributes
+ * @var \preference\userprofile\models\UserProfile $userProfile
+ * @var array $languages
+ * @var array $selectedLanguages
  */
 
 $bootstrapItaliaAsset = BootstrapItaliaDesignAsset::register($this);
@@ -93,9 +97,63 @@ switch ($currentTargetCode) {
                                 $this->registerJs('$("#collapse1").collapse(\'show\');', View::POS_READY);
                             }
 
+
                             ?>
                         </ul>
                     </div>
+
+                    <hr />
+
+                    <div class="link-list-wrapper">
+                        <ul class="mb-0 mt-4 link-list"> 
+                            <li>
+                                <h3 class="mb-0">Le tue lingue:</h3></ul>
+                            </li>
+                        </ul>   
+
+                        <?php
+                            $this->registerJs(
+<<<JS
+
+                                $('[id^="toggle-language-id"]').change(function(event) {
+                                    $( "#language-form-id" ).submit();
+                                });
+JS
+                                , View::POS_READY);
+
+                            $form = ActiveForm::begin([
+                                'options' => [
+                                    'id' => 'language-form-id',
+                                    'class' => 'pl-4',
+                                    'data-fid' => 0,
+                                    'data-field' => '',
+                                    'data-entity' => '',
+                                    'enctype' => 'multipart/form-data',
+                                ],
+                            ]);
+                        ?>
+                        <input type="hidden" name="language" value="true" \>
+                        <?php
+                        /** @var PreferenceLanguage $language */
+                        foreach ($languages as $language) {
+                            $isLanguageSelected = in_array($language->id, $selectedLanguages);
+                            ?>
+                            <div class="form-check form-check-group">
+                                <div class="toggles">
+                                    <label for="toggle-language-id-<?= $language->id ?>">
+                                        <?= $language->labelWithImage ?>
+                                        <input name="languages[<?= $language->id ?>]" type="checkbox" value="1" id="toggle-language-id-<?= $language->id ?>"  <?= $isLanguageSelected ? 'checked' : ''; ?>>
+                                        <span class="lever"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <?php
+                        }
+
+                        ActiveForm::end();
+                        ?>
+                    </div>
+
                 </div>
             </div>
         </div>

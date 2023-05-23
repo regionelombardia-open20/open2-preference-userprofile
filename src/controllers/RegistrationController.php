@@ -11,10 +11,12 @@ use open20\amos\core\utilities\CurrentUser;
 use open20\amos\socialauth\utility\SocialAuthUtility;
 use preference\userprofile\exceptions\NotificationEmailException;
 use preference\userprofile\models\base\PreferenceChannel;
+use preference\userprofile\models\PreferenceLanguageUserMm;
 use preference\userprofile\models\IstatComuni;
 use open20\amos\core\controllers\BackendController;
 use preference\userprofile\exceptions\CreationRegisterdUserException;
 use preference\userprofile\exceptions\LoadWizardDataException;
+use preference\userprofile\models\PreferenceLanguage;
 use preference\userprofile\models\PreferenceTopicPrlToPc;
 use preference\userprofile\models\PreferenceUserTargetAttribute;
 use preference\userprofile\models\StepContacts;
@@ -557,6 +559,12 @@ class RegistrationController extends BackendController
                 $userProfile->preference_origin_system_id = 1;
                 $userProfile->save(false);
             }
+
+            // for language
+            $userLanguage = new PreferenceLanguageUserMm();
+            $userLanguage->user_id = $user->id;
+            $userLanguage->preference_language_id = PreferenceLanguage::ITA_ID;
+            $userLanguage->save(false);
 
             // VarDumper::dump($uta->toArray(), 2, true);
             // $transaction->rollBack(); die;

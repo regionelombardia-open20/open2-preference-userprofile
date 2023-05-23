@@ -13,6 +13,8 @@ use preference\userprofile\exceptions\HandlePreferenceException;
 use preference\userprofile\models\IstatComuni;
 use preference\userprofile\models\PersonalData;
 use preference\userprofile\models\PreferenceChannel;
+use preference\userprofile\models\PreferenceLanguage;
+use preference\userprofile\models\PreferenceLanguageUserMm;
 use preference\userprofile\models\PreferenceTopicChannelMm;
 use preference\userprofile\models\PreferenceUsernameValidationToken;
 use preference\userprofile\models\PreferenceUserTargetAttribute;
@@ -136,6 +138,8 @@ class PreferenceController extends BackendController
     {
         $nameTopicSelected = 'topic_selected';
         $nameTopicDeselected = 'topic_deselected';
+        $nameLanguage = 'language';
+        $nameLanguages = 'languages';
 
         //  VarDumper::dump(Yii::$app->request->post(), $depth = 10, $highlight = true); die;
 
@@ -150,6 +154,8 @@ class PreferenceController extends BackendController
         }
 
         $loggedUserProfile = UserProfile::findOne(['user_id' => Yii::$app->user->id]);
+        $userProfileForLanguage = \preference\userprofile\models\UserProfile::findOne(['user_id' => Yii::$app->user->id]);
+
         if (empty($loggedUserProfile)) {
             throw new UnauthorizedHttpException();
         }
@@ -162,6 +168,9 @@ class PreferenceController extends BackendController
         /** @var PreferenceUserTargetAttribute $targetAttributes */
         $targetAttributes = TargetAttributeUtility::getAttributesByUserCode(Yii::$app->user->id, $target);
         //VarDumper::dump( $targetAttributes->toArray(), $depth = 3, $highlight = true);
+
+        // for language
+        $userProfileForLanguage->checkIntegrityLanguage();
 
         if (Yii::$app->request->post()) {
             //  VarDumper::dump( Yii::$app->request->post(), 3, $highlight = true);
@@ -238,11 +247,20 @@ class PreferenceController extends BackendController
             if ($targetAttributes->load(Yii::$app->request->post()) && $targetAttributes->validate()) {
                 $targetAttributes->save();
             }
+
+            if (!empty(Yii::$app->request->post($nameLanguage))) {
+                $dataLanguages = Yii::$app->request->post($nameLanguages);
+                $this->setLanguages($userProfileForLanguage, $dataLanguages);
+            }
+
         }
 
         //  VarDumper::dump( $nameTopicSelected, $depth = 10, $highlight = true);
 
         $hbEmails = HardBouncedEmailUtlity::allHBEmailForUser(Yii::$app->user->id);
+
+        $languages = PreferenceLanguage::getLanguages();
+        $selectedLanguages = \yii\helpers\ArrayHelper::map($userProfileForLanguage->languages,'id','id');
 
         return $this->render("settings", [
             'listOfTarget' => TargetTagUtility::getAllTargetTag(),
@@ -256,7 +274,47 @@ class PreferenceController extends BackendController
             'isTargetActive' => TargetTagUtility::isTargetSelectedForUser($targetTag, $loggedUserProfile->user->id),
             'isHBEmail' => (count($hbEmails) > 0),
             'hbEmail' => $hbEmails,
+            'userProfile' => $loggedUserProfile,
+            'languages' => $languages,
+            'selectedLanguages' => $selectedLanguages,
         ]);
+    }
+
+    /**
+     * @param \preference\userprofile\models\UserProfile $userProfile
+     * @param array $data
+     */
+    private function setLanguages($userProfile, $data)
+    {
+
+        if (!empty($data)) {
+
+
+            $oldLanguages = PreferenceLanguageUserMm::find()->andWhere(['user_id' => $userProfile->user_id])->all();
+            foreach ($oldLanguages as $languageToDelete){
+                $languageToDelete->delete();
+            }
+
+            foreach ($data as $languageId => $value) {
+                /** @var PreferenceLanguageUserMm $languageToSave */
+                $languageToSave = new PreferenceLanguageUserMm();
+                $languageToSave->user_id = $userProfile->user_id;
+                $languageToSave->preference_language_id = $languageId;
+                $languageToSave->save(false);
+            }
+
+
+        } else {
+            Yii::$app->session->addFlash('modal', [
+                    'title' => 'Impostazione lingua non riuscita',
+                    'description' => 'Devi mantenere almeno una lingua selezionata',
+                    'icon' => Url::to('/img/warning.svg'),
+                    'icon-alt' => 'icona telefono con simbolo di attenzione',
+                    'ok-button-label' => 'OK Grazie'
+                ]
+            );
+        }
+
     }
 
     /**

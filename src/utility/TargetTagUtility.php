@@ -75,7 +75,7 @@ class TargetTagUtility
     public static function getFirstTargetTag($user_id)
     {
         $userProfile = UserProfile::findOne(['user_id' => $user_id]);
-        $query = self::baseQuery()->joinWith('pcCwhTagOwnerInterestMm', true, 'INNER JOIN')
+        $query = self::baseQuery()->joinWith('pcCwhTagOwnerInterestMm', false, 'INNER JOIN')
             ->andWhere(['record_id' => $userProfile->id])
             ->andWhere(['classname' => UserProfile::className()]);
         //VarDumper::dump( $query->createCommand()->rawSql, $depth = 10, $highlight = true); die;
@@ -85,7 +85,7 @@ class TargetTagUtility
     public static function getAllTargetTagForUSer($user_id)
     {
         $userProfile = UserProfile::findOne(['user_id' => $user_id]);
-        $query = self::baseQuery()->joinWith('pcCwhTagOwnerInterestMm', true, 'INNER JOIN')
+        $query = self::baseQuery()->joinWith('pcCwhTagOwnerInterestMm', false, 'INNER JOIN')
             ->andWhere(['record_id' => $userProfile->id])
             ->andWhere(['classname' => UserProfile::className()])
             ;
@@ -96,7 +96,7 @@ class TargetTagUtility
     public static function isTargetSelectedForUser($tag, $user_id)
     {
         $userProfile = UserProfile::findOne(['user_id' => $user_id]);
-        $query = self::baseQuery()->joinWith('pcCwhTagOwnerInterestMm', true, 'INNER JOIN')
+        $query = self::baseQuery()->joinWith('pcCwhTagOwnerInterestMm', false, 'INNER JOIN')
             ->andWhere(['record_id' => $userProfile->id])
             ->andWhere(['classname' => UserProfile::className()])
             ->andWhere(['tag_id' => $tag->id])

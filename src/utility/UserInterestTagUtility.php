@@ -40,7 +40,7 @@ class UserInterestTagUtility
         $rootTag = TargetTagUtility::getTargetByCode($targetCode);
         $className = UserProfile::className();
         $recordId = UserProfile::findOne(['user_id' => $userId])->id;
-        $query = Tag::find()->joinWith('pcCwhTagOwnerInterestMm',true,'INNER JOIN')
+        $query = Tag::find()->joinWith('pcCwhTagOwnerInterestMm',false,'INNER JOIN')
             ->where(['cwh_tag_owner_interest_mm.root_id' => $rootTag->id])
             ->andWhere(['cwh_tag_owner_interest_mm.classname' => $className])
             ->andWhere(['cwh_tag_owner_interest_mm.record_id' => $recordId])
@@ -60,7 +60,7 @@ class UserInterestTagUtility
     {
         $className = UserProfile::className();
         $recordId = UserProfile::findOne(['user_id' => $userId])->id;
-        $query = Tag::find()->joinWith('pcCwhTagOwnerInterestMm',true,'INNER JOIN')
+        $query = Tag::find()->joinWith('pcCwhTagOwnerInterestMm',false,'INNER JOIN')
             ->andWhere(['cwh_tag_owner_interest_mm.classname' => $className])
             ->andWhere(['cwh_tag_owner_interest_mm.record_id' => $recordId])
             ->andWhere(['cwh_tag_owner_interest_mm.deleted_at' => null])

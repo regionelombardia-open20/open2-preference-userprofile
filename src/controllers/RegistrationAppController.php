@@ -7,6 +7,8 @@ use open20\amos\admin\models\UserOtpCode;
 use open20\amos\admin\models\UserProfile;
 use open20\amos\socialauth\utility\SocialAuthUtility;
 use preference\userprofile\exceptions\NotificationEmailException;
+use preference\userprofile\models\PreferenceLanguageUserMm;
+use preference\userprofile\models\PreferenceLanguage;
 use preference\userprofile\utility\UserProfileUtility;
 use open20\amos\comuni\models\IstatProvince;
 use preference\userprofile\models\IstatComuni;
@@ -513,6 +515,12 @@ class RegistrationAppController extends BackendController
                 $userProfile->preference_origin_system_id = 2;
                 $userProfile->save(false);
             }
+
+            // for language
+            $userLanguage = new PreferenceLanguageUserMm();
+            $userLanguage->user_id = $user->id;
+            $userLanguage->preference_language_id = PreferenceLanguage::ITA_ID;
+            $userLanguage->save(false);
 
             $this->session->remove($this->stepPreferenceSessionId);
             $this->session->remove($this->stepPersonalDataSessionId);

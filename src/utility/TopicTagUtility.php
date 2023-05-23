@@ -187,7 +187,7 @@ class TopicTagUtility
     public static function isTopicSelectedForUser($tag, $user_id)
     {
         $userProfile = UserProfile::findOne(['user_id' => $user_id]);
-        $query = self::baseQuery()->joinWith('pcCwhTagOwnerInterestMm', true, 'INNER JOIN')
+        $query = self::baseQuery()->joinWith('pcCwhTagOwnerInterestMm', false, 'INNER JOIN')
             ->andWhere(['record_id' => $userProfile->id])
             ->andWhere(['classname' => UserProfile::className()])
             ->andWhere(['tag_id' => $tag->id])

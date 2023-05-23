@@ -47,6 +47,7 @@ class StepPersonalData extends Model
             [['gender', 'fiscal_code'], 'safe'],
             [['name', 'surname'], 'string', 'max' => 255],
             [['birth_date'], 'date', 'format' => 'd/m/Y'],
+            [['birth_date'], 'match', 'pattern'=>'#\d{2}/\d{2}/\d{4}#'],
             [['email'], 'email'],
             [['email'], function ($attribute, $params, $validator) {
                 $upm = User::findOne(['email' => $this->$attribute]);
